@@ -1,6 +1,5 @@
 {
   "name": "plantae",
-  "private": true,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
