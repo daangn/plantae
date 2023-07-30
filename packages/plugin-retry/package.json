@@ -1,0 +1,34 @@
+{
+  "name": "@plantae/plugin-retry",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "nanobundle build",
+    "clean": "nanobundle clean"
+  },
+  "devDependencies": {
+    "axios": "^1.4.0",
+    "ky": "^0.33.3",
+    "nanobundle": "^1.5.0",
+    "plantae": "workspace:^",
+    "rimraf": "^4.4.0",
+    "typescript": "^5.1.3"
+  },
+  "ultra": {
+    "concurrent": [
+      "build"
+    ]
+  }
+}

@@ -20,15 +20,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "reference": "workspace:packages/plantae"\
       },\
       {\
-        "name": "@plantae/plugin-example",\
-        "reference": "workspace:packages/plugin-example"\
+        "name": "@plantae/plugin-retry",\
+        "reference": "workspace:packages/plugin-retry"\
       }\
     ],\
     "enableTopLevelFallback": true,\
     "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
     "fallbackExclusionList": [\
       ["@plantae/monorepo", ["workspace:."]],\
-      ["@plantae/plugin-example", ["workspace:packages/plugin-example"]],\
+      ["@plantae/plugin-retry", ["workspace:packages/plugin-retry"]],\
       ["plantae", ["workspace:packages/plantae"]]\
     ],\
     "fallbackPool": [\
@@ -3853,12 +3853,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "SOFT"\
         }]\
       ]],\
-      ["@plantae/plugin-example", [\
-        ["workspace:packages/plugin-example", {\
-          "packageLocation": "./packages/plugin-example/",\
+      ["@plantae/plugin-retry", [\
+        ["workspace:packages/plugin-retry", {\
+          "packageLocation": "./packages/plugin-retry/",\
           "packageDependencies": [\
-            ["@plantae/plugin-example", "workspace:packages/plugin-example"],\
+            ["@plantae/plugin-retry", "workspace:packages/plugin-retry"],\
+            ["axios", "npm:1.4.0"],\
+            ["ky", "npm:0.33.3"],\
             ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
+            ["plantae", "workspace:packages/plantae"],\
             ["rimraf", "npm:4.4.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
           ],\
