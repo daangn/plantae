@@ -22,6 +22,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       {\
         "name": "@plantae/plugin-retry",\
         "reference": "workspace:packages/plugin-retry"\
+      },\
+      {\
+        "name": "@plantae/plugin-timeout",\
+        "reference": "workspace:packages/plugin-timeout"\
       }\
     ],\
     "enableTopLevelFallback": true,\
@@ -29,6 +33,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     "fallbackExclusionList": [\
       ["@plantae/monorepo", ["workspace:."]],\
       ["@plantae/plugin-retry", ["workspace:packages/plugin-retry"]],\
+      ["@plantae/plugin-timeout", ["workspace:packages/plugin-timeout"]],\
       ["plantae", ["workspace:packages/plantae"]]\
     ],\
     "fallbackPool": [\
@@ -3860,6 +3865,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@plantae/plugin-retry", "workspace:packages/plugin-retry"],\
             ["axios", "npm:1.4.0"],\
             ["ky", "npm:0.33.3"],\
+            ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
+            ["plantae", "workspace:packages/plantae"],\
+            ["rimraf", "npm:4.4.1"],\
+            ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
+          ],\
+          "linkType": "SOFT"\
+        }]\
+      ]],\
+      ["@plantae/plugin-timeout", [\
+        ["workspace:packages/plugin-timeout", {\
+          "packageLocation": "./packages/plugin-timeout/",\
+          "packageDependencies": [\
+            ["@plantae/plugin-timeout", "workspace:packages/plugin-timeout"],\
             ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
             ["plantae", "workspace:packages/plantae"],\
             ["rimraf", "npm:4.4.1"],\
