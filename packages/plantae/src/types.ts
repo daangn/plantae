@@ -66,7 +66,7 @@ export type Plugin<Context = {}> = {
 
 export type AdapterRequest = Pick<
   Request,
-  "body" | "headers" | "method" | "url"
+  "body" | "headers" | "method" | "url" | "signal"
 >;
 
 export type AdapterResponse = Pick<

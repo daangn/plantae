@@ -16,6 +16,7 @@ function convertToAdapterRequest(
     headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     method: req.method ?? "GET",
     url: req.url ?? "",
+    signal: req.signal as AbortSignal,
   };
 }
 

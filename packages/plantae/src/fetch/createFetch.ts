@@ -7,6 +7,7 @@ export function convertToAdapterRequest(req: Request): AdapterRequest {
     headers: req.headers,
     method: req.method,
     url: req.url,
+    signal: req.signal,
   };
 }
 
