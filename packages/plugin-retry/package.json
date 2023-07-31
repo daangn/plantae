@@ -1,5 +1,6 @@
 {
   "name": "@plantae/plugin-retry",
+  "license": "MIT",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

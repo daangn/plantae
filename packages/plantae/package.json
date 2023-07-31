@@ -1,5 +1,6 @@
 {
   "name": "plantae",
+  "license": "MIT",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
