@@ -3863,8 +3863,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./packages/plugin-retry/",\
           "packageDependencies": [\
             ["@plantae/plugin-retry", "workspace:packages/plugin-retry"],\
-            ["axios", "npm:1.4.0"],\
-            ["ky", "npm:0.33.3"],\
             ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
             ["plantae", "workspace:packages/plantae"],\
             ["rimraf", "npm:4.4.1"],\

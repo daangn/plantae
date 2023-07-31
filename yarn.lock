@@ -2348,8 +2348,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@plantae/plugin-retry@workspace:packages/plugin-retry"
   dependencies:
-    axios: ^1.4.0
-    ky: ^0.33.3
     nanobundle: ^1.5.0
     plantae: "workspace:^"
     rimraf: ^4.4.0
