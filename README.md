@@ -95,23 +95,27 @@ import type { Plugin } from "plantae";
 export default function AuthPlugin(): Plugin<{
   token: string;
 }> {
+  const context = {
+    token: "token",
+  };
+
   return {
     name: "plugin-auth",
-    context: {
-      token: "token",
-    },
+    context,
     hooks: {
       beforeRequest: (req) => {
-        req.headers.set("Authorization", this.context.token);
+        req.headers.set("Authorization", context.token);
+
+        return req;
       },
-      afterResponse: (res, req, retry) => {
+      afterResponse: async (res, req, retry) => {
         if (res.status === 401) {
           const refresh = new Request("https://example.com/refresh-token");
-          const token = await retry(refresh).then((res) =>
-            new Response(res.body).text()
+          const token = await retry(refresh).then(({ body }) =>
+            new Response(body).text()
           );
 
-          this.context.token = token;
+          context.token = token;
 
           req.headers.set("Authorization", `token ${token}`);
 
