@@ -17,6 +17,8 @@ yarn add @plantae/plugin-timeout
 ```ts
 import timeoutPlugin from "@plantae/plugin-timeout";
 
-// timeout 5 seconds
-timeoutPlugin(5000);
+const fetchWithTimeout = createFetch({
+  client: fetch,
+  plugins: [timeoutPlugin(5000)], // timeout after 5 seconds
+});
 ```

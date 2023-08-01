@@ -19,16 +19,26 @@ yarn add @plantae/plugin-retry
 ```ts
 import retryPlugin from "@plantae/plugin-retry";
 
-// retry 3 times
-retryPlugin(3);
+const fetchWithRetry = createFetch({
+  client: fetch,
+  plugins: [retryPlugin(3)], // retry 3 times
+});
+```
 
-// or with options
-retryPlugin({
-  limit: 3,
-  methods: ["GET", "POST"],
-  statusCodes: [408, 429],
-  maxRetryAfter: 1000,
-  backoffLimit: 10000,
+Or, you can pass the options:
+
+```ts
+const fetchWithRetry = createFetch({
+  client: fetch,
+  plugins: [
+    retryPlugin({
+      limit: 3,
+      methods: ["GET", "POST"],
+      statusCodes: [408, 429],
+      maxRetryAfter: 1000,
+      backoffLimit: 10000,
+    }),
+  ],
 });
 ```
 
