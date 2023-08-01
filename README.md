@@ -30,12 +30,11 @@ yarn add plantae
 
 ```ts
 import { createFetch } from "plantae";
-import retryPlugin from "@plantae/plugin-retry";
-import timeoutPlugin from "@plantae/plugin-timeout";
+import myPlugin from "../myPlugin";
 
 export const myFetch = createFetch({
   client: fetch,
-  plugins: [retryPlugin(3), timeoutPlugin(5000)],
+  plugins: [myPlugin()],
 });
 ```
 
@@ -52,8 +51,6 @@ const hooks = createKyHooks({
 });
 
 export const myKy = ky.extend({
-  retry: 3,
-  timeout: 5000,
   hooks,
 });
 
@@ -67,16 +64,14 @@ ky("https://example.com", {
 
 ```ts
 import { createAxiosInterceptors } from "plantae";
-import retryPlugin from "@plantae/plugin-retry";
+import myPlugin from "../myPlugin";
 import axios from "axios";
 
-const myAxios = axios.create({
-  timeout: 5000,
-});
+const myAxios = axios.create();
 
 const { request, response } = createAxiosInterceptors({
-  client: axiosInstance,
-  plugins: [retryPlugin(3)],
+  client: myAxios,
+  plugins: [myPlugin()],
 });
 
 myAxios.interceptors.request.use(request);
