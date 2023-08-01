@@ -1,6 +1,9 @@
 {
   "name": "@plantae/plugin-timeout",
   "version": "0.0.0",
+  "keywords": [
+    "plantae-plugin"
+  ],
   "license": "MIT",
   "exports": {
     ".": {
