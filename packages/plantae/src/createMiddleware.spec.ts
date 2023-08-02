@@ -15,7 +15,10 @@ describe("createMiddleware -", () => {
       convertToAdapterRequest: (req) => {
         return {
           body: req.body,
-          headers: req.headers,
+          headers: new Headers({
+            ...req.headers,
+            foo: "hihigh", // MEMO: 이건 extendClientRequest에 덮어쓰여짐
+          }),
           method: req.method,
           url: req.url,
           signal: req.signal,
@@ -77,8 +80,8 @@ describe("createMiddleware -", () => {
           headers: new Headers(
             (res.headers as AxiosResponseHeaders).toJSON(true) as HeadersInit
           ),
-          url: res.url,
-          ok: res.ok,
+          url: res.url!,
+          ok: res.ok!,
           status: res.status,
           statusText: res.statusText,
         }),
