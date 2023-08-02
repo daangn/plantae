@@ -8,7 +8,7 @@ import type {
 
 type ConvertToAdapterRequest<T> = (request: ClientRequest<T>) => AdapterRequest;
 type ExtendClientRequest<T> = (
-  clientRequest: ClientRequest<T>
+  clientRequest: ClientRequest<T>,
   adapterRequest: AdapterRequest
 ) => ClientRequest<T>;
 
