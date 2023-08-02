@@ -1,0 +1,43 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Publish packages - main
+
+jobs:
+  publish-package:
+    name: Publish packages
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          registry-url: https://registry.npmjs.org
+      - uses: actions/cache@v2
+        id: yarn-unplugged-cache
+        with:
+          path: |
+            '.yarn/unplugged/'
+            '.yarn/build-state.yml'
+            '.yarn/install-state.gz'
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v1-
+
+      - name: Install unplugged dependencies and check immutable
+        run: |
+          yarn install --immutable
+        shell: bash
+
+      - name: Create PR or release packages
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: yarn release
+          version: yarn version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
