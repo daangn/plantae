@@ -9,12 +9,10 @@
     "build:dts": "ultra -r --build build:dts",
     "clean": "ultra -r clean",
     "format": "eslint --fix --ext .js,.json,.ts,.tsx --ignore-path .gitignore .",
-    "lerna:publish": "yarn build && lerna publish",
-    "lerna:publish:all": "yarn build && lerna publish --force-publish",
-    "lerna:publish:canary": "yarn build && lerna publish --canary",
+    "release": "yarn changeset publish",
     "test": "yarn build && ultra -r test",
     "typecheck": "tsc --noEmit",
-    "version": "yarn install && git stage yarn.lock"
+    "version": "changeset version main && yarn install --no-immutable"
   },
   "lint-staged": {
     "*.js": "eslint --fix --ignore-path .gitignore",
@@ -26,6 +24,7 @@
     "esbuild": "0.17"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
     "@types/node": "^18.15.0",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
@@ -37,7 +36,6 @@
     "eslint-plugin-json-format": "^2.0.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "lerna": "^7.1.4",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.4",
     "typescript": "^5.1.3",
