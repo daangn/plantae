@@ -26,10 +26,11 @@ function extendClientRequest(
 ): InternalAxiosRequestConfig {
   const { body: data, headers, ...rest } = adapterRequest;
 
-  clientRequest.headers.concat(Object.fromEntries(headers?.entries() ?? []));
-
   return {
     ...clientRequest,
+    headers: clientRequest.headers.concat(
+      Object.fromEntries(headers?.entries() ?? [])
+    ),
     data,
     ...rest,
   };
@@ -56,10 +57,9 @@ function extendClientResponse(
 
   const axiosHeaders = clientResponse.headers as AxiosResponseHeaders;
 
-  axiosHeaders.concat(Object.fromEntries(headers?.entries() ?? []));
-
   return {
     ...clientResponse,
+    headers: axiosHeaders.concat(Object.fromEntries(headers?.entries() ?? [])),
     data,
     ...rest,
   };
