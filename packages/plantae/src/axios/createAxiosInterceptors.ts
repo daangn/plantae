@@ -26,10 +26,11 @@ function extendClientRequest(
 ): InternalAxiosRequestConfig {
   const { body: data, headers, ...rest } = adapterRequest;
 
-  clientRequest.headers.concat(Object.fromEntries(headers?.entries() ?? []));
-
   return {
     ...clientRequest,
+    headers: clientRequest.headers.concat(
+      Object.fromEntries(headers?.entries() ?? [])
+    ),
     data,
     ...rest,
   };
@@ -38,9 +39,11 @@ function extendClientRequest(
 function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
   const headers = res.headers as AxiosResponseHeaders;
 
+  const newHeaders = new Headers(headers.toJSON(true) as HeadersInit);
+
   return {
     body: res.data,
-    headers: new Headers(headers.toJSON(true) as HeadersInit),
+    headers: newHeaders,
     ok: res.status >= 200 && res.status < 300,
     status: res.status,
     statusText: res.statusText,
@@ -56,10 +59,9 @@ function extendClientResponse(
 
   const axiosHeaders = clientResponse.headers as AxiosResponseHeaders;
 
-  axiosHeaders.concat(Object.fromEntries(headers?.entries() ?? []));
-
   return {
     ...clientResponse,
+    headers: axiosHeaders.concat(Object.fromEntries(headers?.entries() ?? [])),
     data,
     ...rest,
   };
