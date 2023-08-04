@@ -9,10 +9,11 @@
     "build:dts": "ultra -r --build build:dts",
     "clean": "ultra -r clean",
     "format": "eslint --fix --ext .js,.json,.ts,.tsx --ignore-path .gitignore .",
-    "release": "yarn changeset publish",
+    "release": "yarn build && yarn changeset publish",
     "test": "yarn build && ultra -r test",
     "typecheck": "tsc --noEmit",
-    "version": "changeset version main && yarn install --no-immutable"
+    "version": "changeset version && yarn install --no-immutable",
+    "version:snapshot": "changeset version --snapshot main && yarn install --no-immutable"
   },
   "lint-staged": {
     "*.js": "eslint --fix --ignore-path .gitignore",
