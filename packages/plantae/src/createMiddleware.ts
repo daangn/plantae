@@ -68,25 +68,18 @@ export function createResponseMiddleware<T>({
     let adapterResponse: AdapterResponse =
       convertToAdapterResponse(clientResponse);
 
-    let prevClientRequest = clientRequest;
-
     for (const plugin of plugins) {
       if (plugin.hooks?.afterResponse) {
         adapterResponse = await plugin.hooks.afterResponse(
           adapterResponse,
-          convertToAdapterRequest(prevClientRequest),
+          convertToAdapterRequest(clientRequest),
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           async (adapterRequest) => {
-            const newRequest = extendClientRequest(
-              prevClientRequest,
-              adapterRequest
-            );
+            clientRequest = extendClientRequest(clientRequest, adapterRequest);
 
-            const newResponse = await retry(newRequest);
+            clientResponse = await retry(clientRequest);
 
-            prevClientRequest = newRequest;
-
-            return convertToAdapterResponse(newResponse);
+            return convertToAdapterResponse(clientResponse);
           }
         );
       }
