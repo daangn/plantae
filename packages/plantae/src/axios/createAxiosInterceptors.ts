@@ -35,9 +35,8 @@ async function extendClientRequest(
     if (contentType?.includes("multipart/form-data")) {
       data = await adapterRequest.formData();
     } else if (
-      ["application/x-www-form-urlencoded", "text/plain"].includes(
-        contentType ?? ""
-      )
+      contentType?.includes("application/x-www-form-urlencoded") ||
+      contentType?.includes("text/plain")
     ) {
       data = await adapterRequest.text();
     } else {
