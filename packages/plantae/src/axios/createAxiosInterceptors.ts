@@ -61,9 +61,9 @@ function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
 
   return new Response(
     res.data !== null &&
-      typeof res.data === "object" &&
-      (res.config.responseType === "json" ||
-        (!res.config.responseType && res.config.transitional?.forcedJSONParsing))
+    typeof res.data === "object" &&
+    (res.config.responseType === "json" ||
+      (!res.config.responseType && res.config.transitional?.forcedJSONParsing))
       ? JSON.stringify(res.data)
       : res.data,
     {
@@ -98,7 +98,7 @@ async function extendClientResponse(
           data = JSON.parse(data);
           headers.set("Content-Type", "application/json");
         }
-      } catch { }
+      } catch {}
     } else {
       data = await adapterResponse.blob();
     }
