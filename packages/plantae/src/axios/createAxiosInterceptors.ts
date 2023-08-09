@@ -11,58 +11,104 @@ import type { AdapterRequest, AdapterResponse, CreateAdapter } from "../types";
 function convertToAdapterRequest(
   req: InternalAxiosRequestConfig
 ): AdapterRequest {
-  return {
-    body: req.data,
-    headers: new Headers(req.headers.toJSON(true) as HeadersInit),
+  return new Request(req.url ?? "", {
+    body: new Request(req.data).body,
     method: req.method ?? "GET",
-    url: req.url ?? "",
+    headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
-  };
+  });
 }
 
-function extendClientRequest(
+async function extendClientRequest(
   clientRequest: InternalAxiosRequestConfig,
   adapterRequest: AdapterRequest
-): InternalAxiosRequestConfig {
-  const { body: data, headers, ...rest } = adapterRequest;
+): Promise<InternalAxiosRequestConfig> {
+  let data = null;
 
-  return {
-    ...clientRequest,
-    headers: clientRequest.headers.concat(
-      Object.fromEntries(headers?.entries() ?? [])
-    ),
-    data,
-    ...rest,
-  };
+  const { headers } = adapterRequest;
+
+  const contentType = headers.get("Content-Type");
+
+  if (adapterRequest.body) {
+    if (contentType?.includes("multipart/form-data")) {
+      data = await adapterRequest.formData();
+    } else if (
+      ["application/x-www-form-urlencoded", "text/plain"].includes(
+        contentType ?? ""
+      )
+    ) {
+      data = await adapterRequest.text();
+    } else {
+      data = await adapterRequest.blob();
+    }
+  }
+
+  for (const [key, value] of headers.entries()) {
+    clientRequest.headers.set(key, value, true);
+  }
+
+  clientRequest.data = data;
+  clientRequest.method = adapterRequest.method;
+  clientRequest.url = adapterRequest.url;
+  clientRequest.signal = adapterRequest.signal;
+
+  return clientRequest;
 }
 
 function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
   const headers = res.headers as AxiosResponseHeaders;
 
-  return {
-    body: res.data,
-    headers: new Headers(headers.toJSON(true) as HeadersInit),
-    ok: res.status >= 200 && res.status < 300,
-    status: res.status,
-    statusText: res.statusText,
-    url: res.config.url ?? "",
-  };
+  return new Response(
+    res.data !== null &&
+    typeof res.data === "object" &&
+    (res.config.responseType === "json" ||
+      (!res.config.responseType && res.config.transitional?.forcedJSONParsing))
+      ? JSON.stringify(res.data)
+      : res.data,
+    {
+      status: res.status,
+      statusText: res.statusText,
+      headers: new Headers(headers.toJSON(true) as HeadersInit),
+    }
+  );
 }
 
-function extendClientResponse(
+async function extendClientResponse(
   clientResponse: AxiosResponse,
   adapterResponse: AdapterResponse
-): AxiosResponse {
-  const { body: data, headers, ...rest } = adapterResponse;
+): Promise<AxiosResponse> {
+  const { headers } = adapterResponse;
 
   const axiosHeaders = clientResponse.headers as AxiosResponseHeaders;
 
-  return {
-    ...clientResponse,
-    headers: axiosHeaders.concat(Object.fromEntries(headers?.entries() ?? [])),
-    data,
-    ...rest,
-  };
+  const contentType = headers.get("Content-Type");
+
+  let data = null;
+
+  if (adapterResponse.body) {
+    if (contentType?.includes("text/plain")) {
+      data = await adapterResponse.text();
+
+      try {
+        if (clientResponse.config.transitional?.forcedJSONParsing) {
+          data = JSON.parse(data);
+          headers.set("Content-Type", "application/json");
+        }
+      } catch {}
+    } else {
+      data = await adapterResponse.blob();
+    }
+  }
+
+  for (const [key, value] of headers.entries()) {
+    axiosHeaders.set(key, value, true);
+  }
+
+  clientResponse.data = data;
+  clientResponse.status = adapterResponse.status;
+  clientResponse.statusText = adapterResponse.statusText;
+
+  return clientResponse;
 }
 
 const createAxiosInterceptors: CreateAdapter<AxiosInstance> = ({

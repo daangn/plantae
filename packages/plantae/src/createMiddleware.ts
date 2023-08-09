@@ -10,7 +10,7 @@ type ConvertToAdapterRequest<T> = (request: ClientRequest<T>) => AdapterRequest;
 type ExtendClientRequest<T> = (
   clientRequest: ClientRequest<T>,
   adapterRequest: AdapterRequest
-) => ClientRequest<T>;
+) => ClientRequest<T> | Promise<ClientRequest<T>>;
 
 type ConvertToAdapterResponse<T> = (
   response: ClientResponse<T>
@@ -18,7 +18,7 @@ type ConvertToAdapterResponse<T> = (
 type ExtendClientResponse<T> = (
   clientResponse: ClientResponse<T>,
   adapterResponse: AdapterResponse
-) => ClientResponse<T>;
+) => ClientResponse<T> | Promise<ClientResponse<T>>;
 
 type Retry<T> = (clientRequest: ClientRequest<T>) => Promise<ClientResponse<T>>;
 
