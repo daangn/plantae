@@ -75,7 +75,10 @@ export function createResponseMiddleware<T>({
           convertToAdapterRequest(clientRequest),
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           async (adapterRequest) => {
-            clientRequest = extendClientRequest(clientRequest, adapterRequest);
+            clientRequest = await extendClientRequest(
+              clientRequest,
+              adapterRequest
+            );
 
             clientResponse = await retry(clientRequest);
 
