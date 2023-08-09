@@ -66,13 +66,15 @@ export type Plugin<Context = {}> = {
 
 export type AdapterRequest = Pick<
   Request,
-  "body" | "headers" | "method" | "url" | "signal"
->;
+  "headers" | "method" | "url" | "signal"
+> &
+  Body;
 
 export type AdapterResponse = Pick<
   Response,
-  "body" | "headers" | "ok" | "status" | "statusText" | "url"
->;
+  "headers" | "ok" | "status" | "statusText"
+> &
+  Body;
 
 export type ClientRequest<T> = T extends AxiosInstance
   ? InternalAxiosRequestConfig
