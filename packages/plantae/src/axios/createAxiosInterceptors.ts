@@ -11,8 +11,10 @@ import type { AdapterRequest, AdapterResponse, CreateAdapter } from "../types";
 function convertToAdapterRequest(
   req: InternalAxiosRequestConfig
 ): AdapterRequest {
-  return new Request(req.url ?? "", {
-    body: new Request(req.url ?? "", { body: req.data }).body,
+  const url = new URL(req.url ?? "", req.baseURL);
+
+  return new Request(url, {
+    body: new Request(url, { body: req.data }).body,
     method: req.method ?? "GET",
     headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
