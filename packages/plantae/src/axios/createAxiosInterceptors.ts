@@ -12,7 +12,7 @@ function convertToAdapterRequest(
   req: InternalAxiosRequestConfig
 ): AdapterRequest {
   return new Request(req.url ?? "", {
-    body: new Request(req.data).body,
+    body: new Request(req.url ?? "", { body: req.data }).body,
     method: req.method ?? "GET",
     headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
