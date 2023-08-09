@@ -150,9 +150,11 @@ describe("axios:afterResponse -", () => {
       name: "myPlugin",
       hooks: {
         afterResponse: async (res) => {
-          res.body = "first";
           res.headers.set("x-first", "foo");
-          return res;
+
+          return new Response("first", {
+            headers: res.headers,
+          });
         },
       },
     });
@@ -161,9 +163,11 @@ describe("axios:afterResponse -", () => {
       name: "secondPlugin",
       hooks: {
         afterResponse: async (res) => {
-          res.body = "second";
           res.headers.set("x-second", "bar");
-          return res;
+
+          return new Response("second", {
+            headers: res.headers,
+          });
         },
       },
     });
@@ -197,7 +201,7 @@ describe("axios:beforeRequest+afterResponse -", () => {
         },
         afterResponse: async (res) => {
           console.log("res: ", res);
-          if (res.body === "request plugin is activated") {
+          if ((await res.text()) === "request plugin is activated") {
             res.headers.set("x-request-plugin", "succeed");
             return res;
           }
@@ -237,7 +241,7 @@ describe("axios:beforeRequest+afterResponse -", () => {
       name: "afterResponsePlugin",
       hooks: {
         afterResponse: async (res) => {
-          if (res.body === "request plugin is activated") {
+          if ((await res.text()) === "request plugin is activated") {
             res.headers.set("x-request-plugin", "succeed");
             return res;
           }
@@ -277,7 +281,7 @@ describe("axios:beforeRequest+afterResponse -", () => {
       name: "afterResponsePlugin",
       hooks: {
         afterResponse: async (res) => {
-          if (res.body === "request plugin is activated") {
+          if ((await res.text()) === "request plugin is activated") {
             res.headers.set("x-request-plugin", "succeed");
             return res;
           }
@@ -317,7 +321,7 @@ describe("axios:beforeRequest+afterResponse -", () => {
       name: "afterResponsePlugin",
       hooks: {
         afterResponse: async (res) => {
-          if (res.body === "request plugin is activated") {
+          if ((await res.text()) === "request plugin is activated") {
             res.headers.set("x-request-plugin", "succeed");
             return res;
           }
