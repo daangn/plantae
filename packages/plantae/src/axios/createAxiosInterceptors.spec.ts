@@ -200,13 +200,19 @@ describe("axios:beforeRequest+afterResponse -", () => {
           return req;
         },
         afterResponse: async (res) => {
-          console.log("res: ", res);
-          if ((await res.text()) === "request plugin is activated") {
-            res.headers.set("x-request-plugin", "succeed");
-            return res;
+          const data = await res.text();
+
+          const newResponse = new Response(data, {
+            headers: res.headers,
+          });
+
+          if (data === "request plugin is activated") {
+            newResponse.headers.set("x-request-plugin", "succeed");
+            return newResponse;
           }
-          res.headers.set("x-request-plugin", "failed");
-          return res;
+
+          newResponse.headers.set("x-request-plugin", "failed");
+          return newResponse;
         },
       },
     });
@@ -241,12 +247,19 @@ describe("axios:beforeRequest+afterResponse -", () => {
       name: "afterResponsePlugin",
       hooks: {
         afterResponse: async (res) => {
-          if ((await res.text()) === "request plugin is activated") {
-            res.headers.set("x-request-plugin", "succeed");
-            return res;
+          const data = await res.text();
+
+          const newResponse = new Response(data, {
+            headers: res.headers,
+          });
+
+          if (data === "request plugin is activated") {
+            newResponse.headers.set("x-request-plugin", "succeed");
+            return newResponse;
           }
-          res.headers.set("x-request-plugin", "failed");
-          return res;
+
+          newResponse.headers.set("x-request-plugin", "failed");
+          return newResponse;
         },
       },
     });
@@ -281,12 +294,19 @@ describe("axios:beforeRequest+afterResponse -", () => {
       name: "afterResponsePlugin",
       hooks: {
         afterResponse: async (res) => {
-          if ((await res.text()) === "request plugin is activated") {
-            res.headers.set("x-request-plugin", "succeed");
-            return res;
+          const data = await res.text();
+
+          const newResponse = new Response(data, {
+            headers: res.headers,
+          });
+
+          if (data === "request plugin is activated") {
+            newResponse.headers.set("x-request-plugin", "succeed");
+            return newResponse;
           }
-          res.headers.set("x-request-plugin", "failed");
-          return res;
+
+          newResponse.headers.set("x-request-plugin", "failed");
+          return newResponse;
         },
       },
     });
@@ -321,12 +341,19 @@ describe("axios:beforeRequest+afterResponse -", () => {
       name: "afterResponsePlugin",
       hooks: {
         afterResponse: async (res) => {
-          if ((await res.text()) === "request plugin is activated") {
-            res.headers.set("x-request-plugin", "succeed");
-            return res;
+          const data = await res.text();
+
+          const newResponse = new Response(data, {
+            headers: res.headers,
+          });
+
+          if (data === "request plugin is activated") {
+            newResponse.headers.set("x-request-plugin", "succeed");
+            return newResponse;
           }
-          res.headers.set("x-request-plugin", "failed");
-          return res;
+
+          newResponse.headers.set("x-request-plugin", "failed");
+          return newResponse;
         },
       },
     });
