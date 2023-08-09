@@ -14,7 +14,7 @@ function convertToAdapterRequest(
   const url = new URL(req.url ?? "", req.baseURL);
 
   return new Request(url, {
-    body: new Request(url, { body: req.data }).body,
+    body: req.data,
     method: req.method ?? "GET",
     headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
