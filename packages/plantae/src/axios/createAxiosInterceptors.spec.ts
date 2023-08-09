@@ -128,10 +128,13 @@ describe.only("axios:beforeRequest -", () => {
           setTimeout(() => {
             controller.abort();
           }, 1000);
-          return {
-            ...req,
+
+          return new Request(req.url, {
             signal: controller.signal,
-          };
+            body: req.body,
+            method: req.method,
+            headers: req.headers,
+          });
         },
       },
     });
