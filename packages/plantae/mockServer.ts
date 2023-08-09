@@ -12,6 +12,20 @@ const handlers = [
     };
     return res(ctx.json(mockJson));
   }),
+  rest.post("https://example.com/api/v1/foo", async (req, res, ctx) => {
+    return res(ctx.text("post request is completed"));
+  }),
+  rest.post("https://example.com/api/v1/bar", async (req, res, ctx) => {
+    const body = await req.json();
+    return res(ctx.json(body));
+  }),
+  rest.get("https://example-second.com/api/v1/foo", async (req, res, ctx) => {
+    return res(ctx.text("url is modified"));
+  }),
+  rest.get("https://example.com/api/v1/delayed", async (req, res, ctx) => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    return res(ctx.text("delayed"));
+  }),
 ];
 
 export const server = setupServer(...handlers);
