@@ -19,7 +19,7 @@ const handlers = [
     const body = await req.json();
     return res(ctx.json(body));
   }),
-  rest.get("https://example-second.com/api/v1/foo", async (req, res, ctx) => {
+  rest.get("https://example.com/api/v1/baz", async (req, res, ctx) => {
     return res(ctx.text("url is modified"));
   }),
   rest.get("https://example.com/api/v1/delayed", async (req, res, ctx) => {

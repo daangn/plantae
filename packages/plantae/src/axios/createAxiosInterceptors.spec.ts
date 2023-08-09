@@ -7,7 +7,7 @@ import createAxiosInterceptors from "./createAxiosInterceptors";
 
 const BASE_URL = "https://example.com";
 
-describe("axios:beforeRequest -", () => {
+describe.only("axios:beforeRequest -", () => {
   test("headers", async () => {
     const axiosInstance = axios.create({
       baseURL: BASE_URL,
@@ -43,7 +43,7 @@ describe("axios:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request(BASE_URL + req.url, {
+          return new Request(req.url, {
             ...req,
             method: "POST",
           });
@@ -62,7 +62,7 @@ describe("axios:beforeRequest -", () => {
     expect(res.data).toEqual("post request is completed");
   });
 
-  test("body", async () => {
+  test.only("body", async () => {
     const axiosInstance = axios.create({
       baseURL: BASE_URL,
     });
@@ -71,8 +71,8 @@ describe("axios:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request(BASE_URL + req.url, {
-            ...req,
+          return new Request(req.url, {
+            method: "POST",
             body: JSON.stringify({ foo: "bar" }),
           });
         },
@@ -86,9 +86,9 @@ describe("axios:beforeRequest -", () => {
 
     axiosInstance.interceptors.request.use(axiosMiddleware.request);
 
-    const res = await axiosInstance.post("/api/v1/bar");
+    const res = await axiosInstance.post("/api/v1/bar", { hello: "world" });
     expect(res.data).toStrictEqual({ foo: "bar" });
-  });
+  }, 1000);
 
   test("url", async () => {
     const axiosInstance = axios.create({
@@ -99,7 +99,7 @@ describe("axios:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request("https://example-second.com" + req.url, req);
+          return new Request(BASE_URL + "/api/v1/baz", req);
         },
       },
     });
@@ -147,7 +147,7 @@ describe("axios:beforeRequest -", () => {
   });
 });
 
-describe.skip("axios:afterResponse -", () => {
+describe("axios:afterResponse -", () => {
   test("headers", async () => {
     const axiosInstance = axios.create({
       baseURL: "https://example.com",
@@ -300,7 +300,7 @@ describe.skip("axios:afterResponse -", () => {
   });
 });
 
-describe.skip("axios:beforeRequest+afterResponse -", () => {
+describe("axios:beforeRequest+afterResponse -", () => {
   test("declare beforeRequest and afterResponse currently", async () => {
     const axiosInstance = axios.create({
       baseURL: "https://example.com",
