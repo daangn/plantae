@@ -7,7 +7,7 @@ import createAxiosInterceptors from "./createAxiosInterceptors";
 
 const BASE_URL = "https://example.com";
 
-describe.only("axios:beforeRequest -", () => {
+describe("axios:beforeRequest -", () => {
   test("headers", async () => {
     const axiosInstance = axios.create({
       baseURL: BASE_URL,
@@ -62,7 +62,7 @@ describe.only("axios:beforeRequest -", () => {
     expect(res.data).toEqual("post request is completed");
   });
 
-  test.only("body", async () => {
+  test("body", async () => {
     const axiosInstance = axios.create({
       baseURL: BASE_URL,
     });
