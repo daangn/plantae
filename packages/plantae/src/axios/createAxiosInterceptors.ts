@@ -86,7 +86,10 @@ async function extendClientResponse(
   let data = null;
 
   if (adapterResponse.body) {
-    if (contentType?.includes("text/plain")) {
+    if (
+      contentType?.includes("text/plain") ||
+      contentType?.includes("application/json")
+    ) {
       data = await adapterResponse.text();
 
       try {
