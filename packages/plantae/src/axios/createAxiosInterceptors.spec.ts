@@ -73,9 +73,8 @@ describe("axios:afterResponse -", () => {
     const myPlugin = (): Plugin => ({
       name: "myPlugin",
       hooks: {
-        afterResponse: async (res) => {
-          res.body = "baz";
-          return res;
+        afterResponse: async () => {
+          return new Response("baz");
         },
       },
     });
@@ -100,9 +99,11 @@ describe("axios:afterResponse -", () => {
       name: "myPlugin",
       hooks: {
         afterResponse: async (res) => {
-          res.body = "first";
           res.headers.set("x-first", "foo");
-          return res;
+
+          return new Response("first", {
+            headers: res.headers,
+          });
         },
       },
     });
@@ -117,9 +118,11 @@ describe("axios:afterResponse -", () => {
       name: "overridenPlugin",
       hooks: {
         afterResponse: async (res) => {
-          res.body = "second";
           res.headers.set("x-second", "bar");
-          return res;
+
+          return new Response("second", {
+            headers: res.headers,
+          });
         },
       },
     });
