@@ -13,6 +13,16 @@ function convertToAdapterRequest(
 ): AdapterRequest {
   const url = new URL(req.url ?? "", req.baseURL);
 
+  if (req.transformRequest) {
+    const transformers = Array.isArray(req.transformRequest)
+      ? req.transformRequest
+      : [req.transformRequest];
+
+    transformers.forEach((transformer) => {
+      req.data = transformer.bind(req)(req.data, req.headers);
+    });
+  }
+
   return new Request(url, {
     body: req.data,
     method: req.method ?? "GET",
