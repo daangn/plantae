@@ -5,7 +5,7 @@ import createFetch from "./createFetch";
 
 const BASE_URL = "https://example.com";
 
-describe.only("fetch:beforeRequest -", () => {
+describe("fetch:beforeRequest -", () => {
   test("headers", async () => {
     const myPlugin = (): Plugin => ({
       name: "myPlugin",
@@ -25,7 +25,7 @@ describe.only("fetch:beforeRequest -", () => {
     const res = await createdFetch("https://example.com/api/v1/foo", {
       method: "GET",
     });
-    const result = await res.json();
+    const result = await res.text();
 
     expect(result).toStrictEqual("request plugin is activated");
   });
@@ -51,7 +51,7 @@ describe.only("fetch:beforeRequest -", () => {
     const res = await createdFetch("https://example.com/api/v1/foo", {
       method: "GET",
     });
-    const result = await res.json();
+    const result = await res.text();
 
     expect(result).toEqual("post request is completed");
   });
@@ -101,7 +101,7 @@ describe.only("fetch:beforeRequest -", () => {
     const res = await createdFetch("https://example.com/api/v1/foo", {
       method: "GET",
     });
-    const result = await res.json();
+    const result = await res.text();
 
     expect(result).toEqual("url is modified");
   });
