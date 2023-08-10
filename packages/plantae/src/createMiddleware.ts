@@ -1,26 +1,18 @@
-import type {
-  AdapterRequest,
-  AdapterResponse,
-  ClientRequest,
-  ClientResponse,
-  Plugin,
-} from "./types";
+import type { AdapterRequest, AdapterResponse, Plugin } from "./types";
 
-type ConvertToAdapterRequest<T> = (request: ClientRequest<T>) => AdapterRequest;
+type ConvertToAdapterRequest<T> = (request: T) => AdapterRequest;
 type ExtendClientRequest<T> = (
-  clientRequest: ClientRequest<T>,
+  clientRequest: T,
   adapterRequest: AdapterRequest
-) => ClientRequest<T> | Promise<ClientRequest<T>>;
+) => T | Promise<T>;
 
-type ConvertToAdapterResponse<T> = (
-  response: ClientResponse<T>
-) => AdapterResponse;
+type ConvertToAdapterResponse<T> = (response: T) => AdapterResponse;
 type ExtendClientResponse<T> = (
-  clientResponse: ClientResponse<T>,
+  clientResponse: T,
   adapterResponse: AdapterResponse
-) => ClientResponse<T> | Promise<ClientResponse<T>>;
+) => T | Promise<T>;
 
-type Retry<T> = (clientRequest: ClientRequest<T>) => Promise<ClientResponse<T>>;
+type Retryer<T, U> = (clientRequest: T) => Promise<U>;
 
 // client request -> adapter request -> pipe plugins -> client request
 export function createRequestMiddleware<T>({
@@ -32,7 +24,7 @@ export function createRequestMiddleware<T>({
   convertToAdapterRequest: ConvertToAdapterRequest<T>;
   extendClientRequest: ExtendClientRequest<T>;
 }) {
-  return async (clientRequest: ClientRequest<T>) => {
+  return async (clientRequest: T) => {
     let adapterRequest = convertToAdapterRequest(clientRequest);
 
     for (const plugin of plugins) {
@@ -46,7 +38,7 @@ export function createRequestMiddleware<T>({
 }
 
 // client response -> adapter response -> pipe plugins -> client response
-export function createResponseMiddleware<T>({
+export function createResponseMiddleware<T, U>({
   plugins,
   convertToAdapterRequest,
   extendClientRequest,
@@ -57,14 +49,11 @@ export function createResponseMiddleware<T>({
   plugins: Plugin[];
   convertToAdapterRequest: ConvertToAdapterRequest<T>;
   extendClientRequest: ExtendClientRequest<T>;
-  convertToAdapterResponse: ConvertToAdapterResponse<T>;
-  extendClientResponse: ExtendClientResponse<T>;
-  retry: Retry<T>;
+  convertToAdapterResponse: ConvertToAdapterResponse<U>;
+  extendClientResponse: ExtendClientResponse<U>;
+  retry: Retryer<T, U>;
 }) {
-  return async (
-    clientResponse: ClientResponse<T>,
-    clientRequest: ClientRequest<T>
-  ) => {
+  return async (clientResponse: U, clientRequest: T) => {
     let adapterResponse: AdapterResponse =
       convertToAdapterResponse(clientResponse);
 
@@ -92,7 +81,7 @@ export function createResponseMiddleware<T>({
   };
 }
 
-export default function createMiddleware<T>({
+export default function createMiddleware<Req, Res>({
   convertToAdapterRequest,
   extendClientRequest,
   convertToAdapterResponse,
@@ -101,19 +90,19 @@ export default function createMiddleware<T>({
   retry,
 }: {
   plugins: Plugin[];
-  convertToAdapterRequest: ConvertToAdapterRequest<T>;
-  extendClientRequest: ExtendClientRequest<T>;
-  convertToAdapterResponse: ConvertToAdapterResponse<T>;
-  extendClientResponse: ExtendClientResponse<T>;
-  retry: Retry<T>;
+  convertToAdapterRequest: ConvertToAdapterRequest<Req>;
+  extendClientRequest: ExtendClientRequest<Req>;
+  convertToAdapterResponse: ConvertToAdapterResponse<Res>;
+  extendClientResponse: ExtendClientResponse<Res>;
+  retry: Retryer<Req, Res>;
 }) {
   return {
-    requestMiddleware: createRequestMiddleware<T>({
+    requestMiddleware: createRequestMiddleware({
       plugins,
       convertToAdapterRequest,
       extendClientRequest,
     }),
-    responseMiddleware: createResponseMiddleware<T>({
+    responseMiddleware: createResponseMiddleware({
       plugins,
       convertToAdapterRequest,
       extendClientRequest,
