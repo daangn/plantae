@@ -1,6 +1,11 @@
 {
   "name": "plantae",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daangn/plantae.git",
+    "directory": "packages/plantae"
+  },
   "license": "MIT",
   "exports": {
     ".": {

@@ -4,6 +4,11 @@
   "keywords": [
     "plantae-plugin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daangn/plantae.git",
+    "directory": "packages/plugin-retry"
+  },
   "license": "MIT",
   "exports": {
     ".": {
