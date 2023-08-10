@@ -40,4 +40,5 @@ jobs:
           publish: yarn release
           version: yarn version
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
