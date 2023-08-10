@@ -46,7 +46,8 @@ async function extendClientRequest(
       data = await adapterRequest.formData();
     } else if (
       contentType?.includes("application/x-www-form-urlencoded") ||
-      contentType?.includes("text/plain")
+      contentType?.includes("text/plain") ||
+      contentType?.includes("application/json")
     ) {
       data = await adapterRequest.text();
     } else {
