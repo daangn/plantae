@@ -8,9 +8,7 @@ name: Publish packages - main
 jobs:
   publish-package:
     name: Publish packages
-    permissions:
-      id-token: write
-      pull-requests: write
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
