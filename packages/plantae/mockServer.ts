@@ -26,6 +26,9 @@ const handlers = [
     await new Promise((resolve) => setTimeout(resolve, 3000));
     return res(ctx.text("delayed"));
   }),
+  rest.get("https://example-second.com/api/v1/foo", async (req, res, ctx) => {
+    return res(ctx.text("url is modified"));
+  }),
 ];
 
 export const server = setupServer(...handlers);
