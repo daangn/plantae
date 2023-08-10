@@ -1,46 +1,5 @@
 import createMiddleware from "../createMiddleware";
-import type { AdapterRequest, AdapterResponse, CreateAdapter } from "../types";
-
-export function convertToAdapterRequest(req: Request): AdapterRequest {
-  return {
-    body: req.body,
-    headers: req.headers,
-    method: req.method,
-    url: req.url,
-    signal: req.signal,
-  };
-}
-
-export function extendClientRequest(
-  clientRequest: Request,
-  adapterRequest: AdapterRequest
-): Request {
-  return {
-    ...clientRequest,
-    ...adapterRequest,
-  };
-}
-
-export function convertToAdapterResponse(res: Response): AdapterResponse {
-  return {
-    body: res.body,
-    headers: res.headers,
-    ok: res.ok,
-    status: res.status,
-    statusText: res.statusText,
-    url: res.url,
-  };
-}
-
-export function extendClientResponse(
-  clientResponse: Response,
-  adapterResponse: AdapterResponse
-): Response {
-  return {
-    ...clientResponse,
-    ...adapterResponse,
-  };
-}
+import type { CreateAdapter } from "../types";
 
 const createFetch: CreateAdapter<typeof fetch> = ({ client, plugins }) => {
   if (!plugins) {
@@ -55,10 +14,10 @@ const createFetch: CreateAdapter<typeof fetch> = ({ client, plugins }) => {
     const { requestMiddleware, responseMiddleware } = createMiddleware<
       typeof fetch
     >({
-      convertToAdapterRequest,
-      convertToAdapterResponse,
-      extendClientRequest,
-      extendClientResponse,
+      convertToAdapterRequest: (req) => req,
+      convertToAdapterResponse: (res) => res,
+      extendClientRequest: (_, req) => req as Request,
+      extendClientResponse: (_, res) => res as Response,
       plugins,
       retry: client,
     });
