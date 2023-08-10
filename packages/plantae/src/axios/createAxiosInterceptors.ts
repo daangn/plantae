@@ -6,7 +6,11 @@ import type {
 } from "axios";
 
 import createMiddleware from "../createMiddleware";
-import type { AdapterRequest, AdapterResponse, CreateAdapter } from "../types";
+import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
+
+type Interceptor<T extends keyof AxiosInstance["interceptors"]> = Parameters<
+  AxiosInstance["interceptors"][T]["use"]
+>[0];
 
 function convertToAdapterRequest(
   req: InternalAxiosRequestConfig
@@ -126,10 +130,16 @@ async function extendClientResponse(
   return clientResponse;
 }
 
-const createAxiosInterceptors: CreateAdapter<AxiosInstance> = ({
+const createAxiosInterceptors = ({
   client,
   plugins,
-}) => {
+}: {
+  client: AxiosInstance;
+  plugins?: Plugin[];
+}): {
+  request: Interceptor<"request">;
+  response: Interceptor<"response">;
+} => {
   if (!plugins) {
     return {
       request: (config) => config,
@@ -137,15 +147,14 @@ const createAxiosInterceptors: CreateAdapter<AxiosInstance> = ({
     };
   }
 
-  const { requestMiddleware, responseMiddleware } =
-    createMiddleware<AxiosInstance>({
-      convertToAdapterRequest,
-      convertToAdapterResponse,
-      extendClientRequest,
-      extendClientResponse,
-      plugins,
-      retry: client.request,
-    });
+  const { requestMiddleware, responseMiddleware } = createMiddleware({
+    convertToAdapterRequest,
+    convertToAdapterResponse,
+    extendClientRequest,
+    extendClientResponse,
+    plugins,
+    retry: client.request,
+  });
 
   return {
     request: requestMiddleware,

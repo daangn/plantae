@@ -1,18 +1,25 @@
 import createMiddleware from "../createMiddleware";
-import type { CreateAdapter } from "../types";
+import type { Plugin } from "../types";
 
-const createFetch: CreateAdapter<typeof fetch> = ({ client, plugins }) => {
+const createFetch = ({
+  client,
+  plugins,
+}: {
+  client: typeof fetch;
+  plugins?: Plugin[];
+}): typeof fetch => {
   if (!plugins) {
     return client;
   }
 
-  return async (...args: Parameters<typeof fetch>) => {
+  return async (...args) => {
     const [input, init] = args;
 
     const initialRequest = new Request(input, init);
 
     const { requestMiddleware, responseMiddleware } = createMiddleware<
-      typeof fetch
+      Request,
+      Response
     >({
       convertToAdapterRequest: (req) => req,
       convertToAdapterResponse: (res) => res,
