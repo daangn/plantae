@@ -111,9 +111,7 @@ export default function AuthPlugin(): Plugin<{
       afterResponse: async (res, req, retry) => {
         if (res.status === 401) {
           const refresh = new Request("https://example.com/refresh-token");
-          const token = await retry(refresh).then(({ body }) =>
-            new Response(body).text()
-          );
+          const token = await retry(refresh).then((res) => res.text());
 
           context.token = token;
 
