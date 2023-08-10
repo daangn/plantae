@@ -35,7 +35,7 @@ describe.only("fetch:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request(BASE_URL + req.url, {
+          return new Request(req.url, {
             ...req,
             method: "POST",
           });
@@ -61,8 +61,9 @@ describe.only("fetch:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request(BASE_URL + req.url, {
+          return new Request(req.url, {
             ...req,
+            method: "POST",
             body: JSON.stringify({ foo: "bar" }),
           });
         },
@@ -87,7 +88,7 @@ describe.only("fetch:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request("https://example-second.com" + req.url, req);
+          return new Request(BASE_URL + "/api/v1/baz", req);
         },
       },
     });

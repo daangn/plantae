@@ -39,7 +39,7 @@ describe("ky:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request(BASE_URL + req.url, {
+          return new Request(req.url, {
             ...req,
             method: "POST",
           });
@@ -68,7 +68,7 @@ describe("ky:beforeRequest -", () => {
       name: "myPlugin",
       hooks: {
         beforeRequest: async (req) => {
-          return new Request(BASE_URL + req.url, {
+          return new Request(req.url, {
             ...req,
             body: JSON.stringify({ foo: "bar" }),
           });
