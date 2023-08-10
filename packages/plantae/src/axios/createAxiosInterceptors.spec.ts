@@ -62,7 +62,8 @@ describe("axios:beforeRequest -", () => {
     expect(res.data).toEqual("post request is completed");
   });
 
-  test("body", async () => {
+  // https://github.com/capricorn86/happy-dom/issues/1016
+  test.skip("body", async () => {
     const axiosInstance = axios.create({
       baseURL: BASE_URL,
     });
