@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.1
+
+### Patch Changes
+
+- b9f434d: seperate types between adapters
+
 ## 0.1.0
 
 ### Minor Changes
