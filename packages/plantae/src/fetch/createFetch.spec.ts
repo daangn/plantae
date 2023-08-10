@@ -22,7 +22,7 @@ describe.only("fetch:beforeRequest -", () => {
       plugins: [myPlugin()],
     });
 
-    const res = createdFetch("https://example.com/api/v1/foo", {
+    const res = await createdFetch("https://example.com/api/v1/foo", {
       method: "GET",
     });
     const result = await res.json();
@@ -48,7 +48,7 @@ describe.only("fetch:beforeRequest -", () => {
       plugins: [myPlugin()],
     });
 
-    const res = createdFetch("https://example.com/api/v1/foo", {
+    const res = await createdFetch("https://example.com/api/v1/foo", {
       method: "GET",
     });
     const result = await res.json();
@@ -75,7 +75,7 @@ describe.only("fetch:beforeRequest -", () => {
       plugins: [myPlugin()],
     });
 
-    const res = createdFetch("https://example.com/api/v1/bar", {
+    const res = await createdFetch("https://example.com/api/v1/bar", {
       method: "POST",
     });
     const result = await res.json();
@@ -98,7 +98,7 @@ describe.only("fetch:beforeRequest -", () => {
       plugins: [myPlugin()],
     });
 
-    const res = createdFetch("https://example.com/api/v1/foo", {
+    const res = await createdFetch("https://example.com/api/v1/foo", {
       method: "GET",
     });
     const result = await res.json();
