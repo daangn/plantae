@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.2
+
+### Patch Changes
+
+- d35d7ef: consider pathname in baseURL for axios
+
 ## 0.1.1
 
 ### Patch Changes
