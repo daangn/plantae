@@ -15,7 +15,9 @@ type Interceptor<T extends keyof AxiosInstance["interceptors"]> = Parameters<
 function convertToAdapterRequest(
   req: InternalAxiosRequestConfig
 ): AdapterRequest {
-  const url = new URL(req.url ?? "", req.baseURL);
+  const path =
+    (req.baseURL ? new URL(req.baseURL).pathname : "") + req.url ?? "";
+  const url = new URL(path, req.baseURL);
 
   if (req.transformRequest) {
     const transformers = Array.isArray(req.transformRequest)
