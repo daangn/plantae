@@ -50,7 +50,7 @@ async function extendClientRequest(
   clientRequest: InternalAxiosRequestConfig,
   adapterRequest: AdapterRequest
 ): Promise<InternalAxiosRequestConfig> {
-  let data = null;
+  let data = clientRequest.data;
 
   const { headers } = adapterRequest;
 
