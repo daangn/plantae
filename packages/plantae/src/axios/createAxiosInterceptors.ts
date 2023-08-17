@@ -39,9 +39,12 @@ function convertToAdapterRequest(
     });
   }
 
+  const method = req.method ?? "GET";
+  const isBodyAccepted = !["GET", "HEAD"].includes(method.toUpperCase());
+
   return new Request(url, {
-    body: req.data,
-    method: req.method ?? "GET",
+    ...(isBodyAccepted && { body: req.data }),
+    method,
     headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
   });
