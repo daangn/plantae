@@ -17,8 +17,8 @@ function convertToAdapterRequest(
 ): AdapterRequest {
   const path = req.url
     ? req.url.startsWith("/")
-      ? req.url
-      : `/${req.url}`
+      ? req.url.slice(1)
+      : req.url
     : "";
 
   const base = req.baseURL
