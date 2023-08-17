@@ -29,18 +29,17 @@ function convertToAdapterRequest(
 
   const url = new URL(path, base);
 
-  if (req.transformRequest) {
-    const transformers = Array.isArray(req.transformRequest)
-      ? req.transformRequest
-      : [req.transformRequest];
-
-    transformers.forEach((transformer) => {
-      req.data = transformer.bind(req)(req.data, req.headers);
-    });
-  }
+  const transformedData = req.transformRequest
+    ? Array.isArray(req.transformRequest)
+      ? req.transformRequest.reduce(
+          (data, transformer) => transformer.bind(req)(data, req.headers),
+          req.data
+        )
+      : req.transformRequest(req.data, req.headers)
+    : req.data;
 
   return new Request(url, {
-    body: req.data,
+    body: transformedData,
     method: req.method ?? "GET",
     headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
@@ -51,7 +50,7 @@ async function extendClientRequest(
   clientRequest: InternalAxiosRequestConfig,
   adapterRequest: AdapterRequest
 ): Promise<InternalAxiosRequestConfig> {
-  let data = null;
+  let data = clientRequest.data;
 
   const { headers } = adapterRequest;
 
