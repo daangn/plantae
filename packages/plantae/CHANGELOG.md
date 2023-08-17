@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.3
+
+### Patch Changes
+
+- c5f8070: fix trailing slash between baseurl and path
+
 ## 0.1.2
 
 ### Patch Changes
