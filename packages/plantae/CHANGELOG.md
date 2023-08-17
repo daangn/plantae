@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.4
+
+### Patch Changes
+
+- 6aa30b3: trim slash for url path
+
 ## 0.1.3
 
 ### Patch Changes
