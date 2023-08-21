@@ -23,14 +23,18 @@
   ],
   "scripts": {
     "build": "nanobundle build",
-    "clean": "nanobundle clean"
+    "clean": "nanobundle clean",
+    "test": "vitest"
   },
   "devDependencies": {
     "axios": "^1.4.0",
+    "happy-dom": "^10.10.4",
     "ky": "^0.33.3",
+    "msw": "^1.2.3",
     "nanobundle": "^1.5.0",
     "rimraf": "^4.4.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "vitest": "^0.34.2"
   },
   "publishConfig": {
     "access": "public",
