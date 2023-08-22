@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.6
+
+### Patch Changes
+
+- 354a085: feat: allow base fetch client to be optional
+
 ## 0.1.5
 
 ### Patch Changes
