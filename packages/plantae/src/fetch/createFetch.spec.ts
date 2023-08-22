@@ -2,10 +2,14 @@ import { describe, expect, test } from "vitest";
 
 import {
   abortSignalPlugin,
+  firstPlugin,
   headerSetPlugin,
+  modifiedHeaderResponsePlugin,
+  modifiedResponseBodyPlugin,
   modifyUrlPlugin,
   postMethodPlugin,
   postMethodWithBodyPlugin,
+  secondPlugin,
 } from "../__mock__/plugin";
 import createFetch from "./createFetch";
 
@@ -77,5 +81,69 @@ describe("fetch:beforeRequest -", () => {
         method: "GET",
       })
     ).rejects.toThrow();
+  });
+});
+
+describe("fetch:afterResponse -", () => {
+  test("headers", async () => {
+    const createdFetch = createFetch({
+      client: fetch,
+      plugins: [modifiedHeaderResponsePlugin()],
+    });
+
+    const res = await createdFetch("https://example.com/api/v1/foo", {
+      method: "GET",
+    });
+
+    expect(res.headers.get("x-foo")).toStrictEqual("bar");
+  });
+
+  test("body", async () => {
+    const createdFetch = createFetch({
+      client: fetch,
+      plugins: [modifiedResponseBodyPlugin()],
+    });
+
+    const res = await createdFetch("https://example.com/api/v1/foo", {
+      method: "GET",
+    });
+    const result = await res.text();
+    expect(result).toStrictEqual("baz");
+  });
+
+  test("overriden plugin", async () => {
+    const createdFetch = createFetch({
+      client: fetch,
+      plugins: [firstPlugin()],
+    });
+    const secondCreatedFetch = createFetch({
+      client: createdFetch,
+      plugins: [secondPlugin()],
+    });
+
+    const res = await secondCreatedFetch("https://example.com/api/v1/foo", {
+      method: "GET",
+    });
+
+    const result = await res.text();
+
+    expect(res.headers.get("x-first")).toBe("foo");
+    expect(res.headers.get("x-second")).toBe("bar");
+    expect(result).toBe("second");
+  });
+
+  test("multiple plugins", async () => {
+    const createdFetch = createFetch({
+      client: fetch,
+      plugins: [firstPlugin(), secondPlugin()],
+    });
+    const res = await createdFetch("https://example.com/api/v1/foo", {
+      method: "GET",
+    });
+    const result = await res.text();
+
+    expect(res.headers.get("x-first")).toBe("foo");
+    expect(res.headers.get("x-second")).toBe("bar");
+    expect(result).toBe("second");
   });
 });
