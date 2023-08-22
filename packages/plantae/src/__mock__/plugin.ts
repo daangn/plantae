@@ -107,3 +107,59 @@ export const secondPlugin = (): Plugin => ({
     },
   },
 });
+
+export const headerSetRequestReseponsePlugin = (): Plugin => ({
+  name: "headerSetRequestReseponsePlugin",
+  hooks: {
+    beforeRequest: async (req) => {
+      req.headers.set("x-request-plugin", "activate");
+      return req;
+    },
+    afterResponse: async (res) => {
+      const data = await res.text();
+
+      const newResponse = new Response(data, {
+        headers: res.headers,
+      });
+
+      if (data === "request plugin is activated") {
+        newResponse.headers.set("x-request-plugin", "succeed");
+        return newResponse;
+      }
+
+      newResponse.headers.set("x-request-plugin", "failed");
+      return newResponse;
+    },
+  },
+});
+
+export const beforeRequestPlugin = (): Plugin => ({
+  name: "beforeRequestPlugin",
+  hooks: {
+    beforeRequest: async (req) => {
+      req.headers.set("x-request-plugin", "activate");
+      return req;
+    },
+  },
+});
+
+export const afterResponsePlugin = (): Plugin => ({
+  name: "afterResponsePlugin",
+  hooks: {
+    afterResponse: async (res) => {
+      const data = await res.text();
+
+      const newResponse = new Response(data, {
+        headers: res.headers,
+      });
+
+      if (data === "request plugin is activated") {
+        newResponse.headers.set("x-request-plugin", "succeed");
+        return newResponse;
+      }
+
+      newResponse.headers.set("x-request-plugin", "failed");
+      return newResponse;
+    },
+  },
+});
