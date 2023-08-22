@@ -118,8 +118,7 @@ describe("ky:afterResponse -", () => {
     expect(res.headers.get("x-foo")).toStrictEqual("bar");
   });
 
-  // FIXME: SyntaxError: Unexpected token b in JSON at position 0
-  test.skip("body", async () => {
+  test("body", async () => {
     const hooks = createKyHooks({
       client: ky,
       plugins: [modifiedResponseBodyPlugin()],
@@ -131,7 +130,7 @@ describe("ky:afterResponse -", () => {
 
     const result = await kyWithHoks
       .get("https://example.com/api/v1/foo")
-      .json();
+      .text();
 
     expect(result).toStrictEqual("baz");
   });
