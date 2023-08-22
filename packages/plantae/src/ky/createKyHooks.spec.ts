@@ -24,11 +24,11 @@ describe("ky:beforeRequest -", () => {
       plugins: [headerSetPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const result = await kyWithHoks
+    const result = await kyWithHooks
       .get("https://example.com/api/v1/foo")
       .text();
 
@@ -41,11 +41,11 @@ describe("ky:beforeRequest -", () => {
       plugins: [postMethodPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const result = await kyWithHoks
+    const result = await kyWithHooks
       .get("https://example.com/api/v1/foo")
       .text();
 
@@ -58,11 +58,11 @@ describe("ky:beforeRequest -", () => {
       plugins: [postMethodWithBodyPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const result = await kyWithHoks
+    const result = await kyWithHooks
       .post("https://example.com/api/v1/bar")
       .json();
 
@@ -75,11 +75,11 @@ describe("ky:beforeRequest -", () => {
       plugins: [modifyUrlPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const result = await kyWithHoks
+    const result = await kyWithHooks
       .get("https://example.com/api/v1/foo")
       .text();
 
@@ -92,12 +92,12 @@ describe("ky:beforeRequest -", () => {
       plugins: [abortSignalPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
     await expect(
-      kyWithHoks.get("https://example.com/api/v1/delayed")
+      kyWithHooks.get("https://example.com/api/v1/delayed")
     ).rejects.toThrow();
   });
 });
@@ -109,11 +109,11 @@ describe("ky:afterResponse -", () => {
       plugins: [modifiedHeaderResponsePlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const res = await kyWithHoks.get("https://example.com/api/v1/foo");
+    const res = await kyWithHooks.get("https://example.com/api/v1/foo");
 
     expect(res.headers.get("x-foo")).toStrictEqual("bar");
   });
@@ -124,11 +124,11 @@ describe("ky:afterResponse -", () => {
       plugins: [modifiedResponseBodyPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const result = await kyWithHoks
+    const result = await kyWithHooks
       .get("https://example.com/api/v1/foo")
       .text();
 
@@ -142,12 +142,12 @@ describe("ky:afterResponse -", () => {
       plugins: [firstPlugin()],
     });
 
-    const firstKyWithHoks = ky.extend({
+    const firstKyWithHooks = ky.extend({
       hooks: firstHooks,
     });
 
     const secondHooks = createKyHooks({
-      client: firstKyWithHoks,
+      client: firstKyWithHooks,
       plugins: [secondPlugin()],
     });
 
@@ -157,7 +157,7 @@ describe("ky:afterResponse -", () => {
 
     const res = await secondKyWithHooks.get("https://example.com/api/v1/foo");
 
-    expect(res.headers.get("x-first")).toBe("foo"); // FIXME: failed test in here. Maybe it would that firstKyWithHoks is not applied
+    expect(res.headers.get("x-first")).toBe("foo"); // FIXME: failed test in here. Maybe it would that firstKyWithHooks is not applied
     expect(res.headers.get("x-second")).toBe("bar");
 
     const result = await res.text();
@@ -170,11 +170,11 @@ describe("ky:afterResponse -", () => {
       plugins: [firstPlugin(), secondPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const res = await kyWithHoks.get("https://example.com/api/v1/foo");
+    const res = await kyWithHooks.get("https://example.com/api/v1/foo");
 
     expect(res.headers.get("x-first")).toBe("foo");
     expect(res.headers.get("x-second")).toBe("bar");
@@ -191,11 +191,11 @@ describe("ky:beforeRequest+afterResponse -", () => {
       plugins: [headerSetRequestReseponsePlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const res = await kyWithHoks.get("https://example.com/api/v1/foo");
+    const res = await kyWithHooks.get("https://example.com/api/v1/foo");
     expect(res.headers.get("x-request-plugin")).toBe("succeed");
   });
 
@@ -205,11 +205,11 @@ describe("ky:beforeRequest+afterResponse -", () => {
       plugins: [beforeRequestPlugin(), afterResponsePlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const res = await kyWithHoks.get("https://example.com/api/v1/foo");
+    const res = await kyWithHooks.get("https://example.com/api/v1/foo");
     expect(res.headers.get("x-request-plugin")).toBe("succeed");
   });
 
@@ -219,11 +219,11 @@ describe("ky:beforeRequest+afterResponse -", () => {
       plugins: [afterResponsePlugin(), beforeRequestPlugin()],
     });
 
-    const kyWithHoks = ky.extend({
+    const kyWithHooks = ky.extend({
       hooks,
     });
 
-    const res = await kyWithHoks.get("https://example.com/api/v1/foo");
+    const res = await kyWithHooks.get("https://example.com/api/v1/foo");
     expect(res.headers.get("x-request-plugin")).toBe("succeed");
   });
 });
