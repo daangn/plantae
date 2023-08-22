@@ -4,10 +4,14 @@ import { describe, expect, test } from "vitest";
 
 import {
   abortSignalPlugin,
+  firstPlugin,
   headerSetPlugin,
+  modifiedHeaderResponsePlugin,
+  modifiedResponseBodyPlugin,
   modifyUrlPlugin,
   postMethodPlugin,
   postMethodWithBodyPlugin,
+  secondPlugin,
 } from "../__mock__/plugin";
 import type { Plugin } from "../types";
 import createAxiosInterceptors from "./createAxiosInterceptors";
@@ -102,19 +106,9 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          res.headers.set("x-foo", "bar");
-          return res;
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [modifiedHeaderResponsePlugin()],
     });
 
     axiosInstance.interceptors.response.use(axiosMiddleware.response);
@@ -133,18 +127,9 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        afterResponse: async () => {
-          return new Response("baz");
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [modifiedResponseBodyPlugin()],
     });
 
     axiosInstance.interceptors.response.use(axiosMiddleware.response);
@@ -158,41 +143,16 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          res.headers.set("x-first", "foo");
-
-          return new Response("first", {
-            headers: res.headers,
-          });
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [firstPlugin()],
     });
 
     axiosInstance.interceptors.response.use(axiosMiddleware.response);
-    const overridenPlugin = (): Plugin => ({
-      name: "overridenPlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          res.headers.set("x-second", "bar");
-
-          return new Response("second", {
-            headers: res.headers,
-          });
-        },
-      },
-    });
 
     const overridenAxiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [overridenPlugin()],
+      plugins: [secondPlugin()],
     });
 
     axiosInstance.interceptors.response.use(overridenAxiosMiddleware.response);
@@ -209,35 +169,9 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          res.headers.set("x-first", "foo");
-
-          return new Response("first", {
-            headers: res.headers,
-          });
-        },
-      },
-    });
-
-    const secondPlugin = (): Plugin => ({
-      name: "secondPlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          res.headers.set("x-second", "bar");
-
-          return new Response("second", {
-            headers: res.headers,
-          });
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin(), secondPlugin()],
+      plugins: [firstPlugin(), secondPlugin()],
     });
 
     axiosInstance.interceptors.response.use(axiosMiddleware.response);
