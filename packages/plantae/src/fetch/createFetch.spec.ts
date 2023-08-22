@@ -2,8 +2,11 @@ import { describe, expect, test } from "vitest";
 
 import {
   abortSignalPlugin,
+  afterResponsePlugin,
+  beforeRequestPlugin,
   firstPlugin,
   headerSetPlugin,
+  headerSetRequestReseponsePlugin,
   modifiedHeaderResponsePlugin,
   modifiedResponseBodyPlugin,
   modifyUrlPlugin,
@@ -145,5 +148,46 @@ describe("fetch:afterResponse -", () => {
     expect(res.headers.get("x-first")).toBe("foo");
     expect(res.headers.get("x-second")).toBe("bar");
     expect(result).toBe("second");
+  });
+});
+
+describe("fetch:beforeRequest+afterResponse -", () => {
+  test("declare beforeRequest and afterResponse currently", async () => {
+    const createdFetch = createFetch({
+      client: fetch,
+      plugins: [headerSetRequestReseponsePlugin()],
+    });
+
+    const res = await createdFetch("https://example.com/api/v1/foo", {
+      method: "GET",
+    });
+
+    expect(res.headers.get("x-request-plugin")).toBe("succeed");
+  });
+
+  test("declare beforeRequest and afterResponse sequentially", async () => {
+    const createdFetch = createFetch({
+      client: fetch,
+      plugins: [beforeRequestPlugin(), afterResponsePlugin()],
+    });
+
+    const res = await createdFetch("https://example.com/api/v1/foo", {
+      method: "GET",
+    });
+
+    expect(res.headers.get("x-request-plugin")).toBe("succeed");
+  });
+
+  test("declare beforeRequest and afterResponse in reverse order", async () => {
+    const createdFetch = createFetch({
+      client: fetch,
+      plugins: [afterResponsePlugin(), beforeRequestPlugin()],
+    });
+
+    const res = await createdFetch("https://example.com/api/v1/foo", {
+      method: "GET",
+    });
+
+    expect(res.headers.get("x-request-plugin")).toBe("succeed");
   });
 });
