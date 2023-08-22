@@ -63,3 +63,47 @@ export const abortSignalPlugin = (): Plugin => ({
     },
   },
 });
+
+export const modifiedHeaderResponsePlugin = (): Plugin => ({
+  name: "modifiedHeaderResponsePlugin",
+  hooks: {
+    afterResponse: async (res) => {
+      res.headers.set("x-foo", "bar");
+      return res;
+    },
+  },
+});
+
+export const modifiedResponseBodyPlugin = (): Plugin => ({
+  name: "modifiedResponseBodyPlugin",
+  hooks: {
+    afterResponse: async () => {
+      return new Response("baz");
+    },
+  },
+});
+
+export const firstPlugin = (): Plugin => ({
+  name: "firstForOverridePlugin",
+  hooks: {
+    afterResponse: async (res) => {
+      res.headers.set("x-first", "foo");
+
+      return new Response("first", {
+        headers: res.headers,
+      });
+    },
+  },
+});
+export const secondPlugin = (): Plugin => ({
+  name: "secondForOverridePlugin",
+  hooks: {
+    afterResponse: async (res) => {
+      res.headers.set("x-second", "bar");
+
+      return new Response("second", {
+        headers: res.headers,
+      });
+    },
+  },
+});
