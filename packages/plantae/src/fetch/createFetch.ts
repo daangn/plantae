@@ -2,17 +2,15 @@ import createMiddleware from "../createMiddleware";
 import type { Plugin } from "../types";
 
 const createFetch = ({
-  client,
-  plugins,
+  client: baseClient,
+  plugins = [],
 }: {
-  client: typeof fetch;
+  client?: typeof fetch;
   plugins?: Plugin[];
 }): typeof fetch => {
-  if (!plugins) {
-    return client;
-  }
-
   return async (...args) => {
+    const client = baseClient ?? fetch;
+
     const [input, init] = args;
 
     const initialRequest = new Request(input, init);
