@@ -135,8 +135,7 @@ describe("ky:afterResponse -", () => {
     expect(result).toStrictEqual("baz");
   });
 
-  // FIXME: It should be checked about the spec
-  test.skip("overriden plugin", async () => {
+  test("overriden plugin", async () => {
     const firstHooks = createKyHooks({
       client: ky,
       plugins: [firstPlugin()],
@@ -151,13 +150,13 @@ describe("ky:afterResponse -", () => {
       plugins: [secondPlugin()],
     });
 
-    const secondKyWithHooks = ky.extend({
+    const secondKyWithHooks = firstKyWithHooks.extend({
       hooks: secondHooks,
     });
 
     const res = await secondKyWithHooks.get("https://example.com/api/v1/foo");
 
-    expect(res.headers.get("x-first")).toBe("foo"); // FIXME: failed test in here. Maybe it would that firstKyWithHooks is not applied
+    expect(res.headers.get("x-first")).toBe("foo");
     expect(res.headers.get("x-second")).toBe("bar");
 
     const result = await res.text();
