@@ -4,8 +4,11 @@ import { describe, expect, test } from "vitest";
 
 import {
   abortSignalPlugin,
+  afterResponsePlugin,
+  beforeRequestPlugin,
   firstPlugin,
   headerSetPlugin,
+  headerSetRequestReseponsePlugin,
   modifiedHeaderResponsePlugin,
   modifiedResponseBodyPlugin,
   modifyUrlPlugin,
@@ -189,34 +192,9 @@ describe("axios:beforeRequest+afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          req.headers.set("x-request-plugin", "activate");
-          return req;
-        },
-        afterResponse: async (res) => {
-          const data = await res.text();
-
-          const newResponse = new Response(data, {
-            headers: res.headers,
-          });
-
-          if (data === "request plugin is activated") {
-            newResponse.headers.set("x-request-plugin", "succeed");
-            return newResponse;
-          }
-
-          newResponse.headers.set("x-request-plugin", "failed");
-          return newResponse;
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [headerSetRequestReseponsePlugin()],
     });
 
     axiosInstance.interceptors.request.use(axiosMiddleware.request);
@@ -229,36 +207,6 @@ describe("axios:beforeRequest+afterResponse -", () => {
   test("declare beforeRequest and afterResponse sequentially", async () => {
     const axiosInstance = axios.create({
       baseURL: "https://example.com",
-    });
-
-    const beforeRequestPlugin = (): Plugin => ({
-      name: "beforeRequestPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          req.headers.set("x-request-plugin", "activate");
-          return req;
-        },
-      },
-    });
-    const afterResponsePlugin = (): Plugin => ({
-      name: "afterResponsePlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          const data = await res.text();
-
-          const newResponse = new Response(data, {
-            headers: res.headers,
-          });
-
-          if (data === "request plugin is activated") {
-            newResponse.headers.set("x-request-plugin", "succeed");
-            return newResponse;
-          }
-
-          newResponse.headers.set("x-request-plugin", "failed");
-          return newResponse;
-        },
-      },
     });
 
     const axiosMiddleware = createAxiosInterceptors({
@@ -278,36 +226,6 @@ describe("axios:beforeRequest+afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const beforeRequestPlugin = (): Plugin => ({
-      name: "beforeRequestPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          req.headers.set("x-request-plugin", "activate");
-          return req;
-        },
-      },
-    });
-    const afterResponsePlugin = (): Plugin => ({
-      name: "afterResponsePlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          const data = await res.text();
-
-          const newResponse = new Response(data, {
-            headers: res.headers,
-          });
-
-          if (data === "request plugin is activated") {
-            newResponse.headers.set("x-request-plugin", "succeed");
-            return newResponse;
-          }
-
-          newResponse.headers.set("x-request-plugin", "failed");
-          return newResponse;
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [afterResponsePlugin(), beforeRequestPlugin()],
@@ -323,36 +241,6 @@ describe("axios:beforeRequest+afterResponse -", () => {
   test("use requestMiddleware and responseMiddleware individually", async () => {
     const axiosInstance = axios.create({
       baseURL: "https://example.com",
-    });
-
-    const beforeRequestPlugin = (): Plugin => ({
-      name: "beforeRequestPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          req.headers.set("x-request-plugin", "activate");
-          return req;
-        },
-      },
-    });
-    const afterResponsePlugin = (): Plugin => ({
-      name: "afterResponsePlugin",
-      hooks: {
-        afterResponse: async (res) => {
-          const data = await res.text();
-
-          const newResponse = new Response(data, {
-            headers: res.headers,
-          });
-
-          if (data === "request plugin is activated") {
-            newResponse.headers.set("x-request-plugin", "succeed");
-            return newResponse;
-          }
-
-          newResponse.headers.set("x-request-plugin", "failed");
-          return newResponse;
-        },
-      },
     });
 
     const requestMiddleware = createAxiosInterceptors({
