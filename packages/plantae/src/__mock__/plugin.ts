@@ -52,7 +52,7 @@ export const abortSignalPlugin = (): Plugin => ({
       const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
-      }, 100);
+      }, 300);
 
       return new Request(req.url, {
         signal: controller.signal,
