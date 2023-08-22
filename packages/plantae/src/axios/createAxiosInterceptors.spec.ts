@@ -2,6 +2,13 @@ import type { AxiosHeaders } from "axios";
 import axios from "axios";
 import { describe, expect, test } from "vitest";
 
+import {
+  abortSignalPlugin,
+  headerSetPlugin,
+  modifyUrlPlugin,
+  postMethodPlugin,
+  postMethodWithBodyPlugin,
+} from "../__mock__/plugin";
 import type { Plugin } from "../types";
 import createAxiosInterceptors from "./createAxiosInterceptors";
 
@@ -13,19 +20,9 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          req.headers.set("x-request-plugin", "activate");
-          return req;
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [headerSetPlugin()],
     });
 
     axiosInstance.interceptors.request.use(axiosMiddleware.request);
@@ -39,21 +36,9 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          return new Request(req.url, {
-            ...req,
-            method: "POST",
-          });
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [postMethodPlugin()],
     });
 
     axiosInstance.interceptors.request.use(axiosMiddleware.request);
@@ -68,21 +53,9 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          return new Request(req.url, {
-            method: "POST",
-            body: JSON.stringify({ foo: "bar" }),
-          });
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [postMethodWithBodyPlugin()],
     });
 
     axiosInstance.interceptors.request.use(axiosMiddleware.request);
@@ -96,20 +69,9 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          const url = new URL(req.url);
-
-          return new Request("https://example-second.com" + url.pathname, req);
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [modifyUrlPlugin()],
     });
 
     axiosInstance.interceptors.request.use(axiosMiddleware.request);
@@ -123,28 +85,9 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          const controller = new AbortController();
-          setTimeout(() => {
-            controller.abort();
-          }, 100);
-
-          return new Request(req.url, {
-            signal: controller.signal,
-            body: req.body,
-            method: req.method,
-            headers: req.headers,
-          });
-        },
-      },
-    });
-
     const axiosMiddleware = createAxiosInterceptors({
       client: axiosInstance,
-      plugins: [myPlugin()],
+      plugins: [abortSignalPlugin()],
     });
 
     axiosInstance.interceptors.request.use(axiosMiddleware.request);

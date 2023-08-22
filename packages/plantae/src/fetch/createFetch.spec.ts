@@ -1,25 +1,19 @@
 import { describe, expect, test } from "vitest";
 
-import type { Plugin } from "../types";
+import {
+  abortSignalPlugin,
+  headerSetPlugin,
+  modifyUrlPlugin,
+  postMethodPlugin,
+  postMethodWithBodyPlugin,
+} from "../__mock__/plugin";
 import createFetch from "./createFetch";
-
-const BASE_URL = "https://example.com";
 
 describe("fetch:beforeRequest -", () => {
   test("headers", async () => {
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          req.headers.set("x-request-plugin", "activate");
-          return req;
-        },
-      },
-    });
-
     const createdFetch = createFetch({
       client: fetch,
-      plugins: [myPlugin()],
+      plugins: [headerSetPlugin()],
     });
 
     const res = await createdFetch("https://example.com/api/v1/foo", {
@@ -31,21 +25,9 @@ describe("fetch:beforeRequest -", () => {
   });
 
   test("method", async () => {
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          return new Request(req.url, {
-            ...req,
-            method: "POST",
-          });
-        },
-      },
-    });
-
     const createdFetch = createFetch({
       client: fetch,
-      plugins: [myPlugin()],
+      plugins: [postMethodPlugin()],
     });
 
     const res = await createdFetch("https://example.com/api/v1/foo", {
@@ -57,22 +39,9 @@ describe("fetch:beforeRequest -", () => {
   });
 
   test("body", async () => {
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          return new Request(req.url, {
-            ...req,
-            method: "POST",
-            body: JSON.stringify({ foo: "bar" }),
-          });
-        },
-      },
-    });
-
     const createdFetch = createFetch({
       client: fetch,
-      plugins: [myPlugin()],
+      plugins: [postMethodWithBodyPlugin()],
     });
 
     const res = await createdFetch("https://example.com/api/v1/bar", {
@@ -84,20 +53,9 @@ describe("fetch:beforeRequest -", () => {
   });
 
   test("url", async () => {
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          const url = new URL(req.url);
-
-          return new Request("https://example-second.com" + url.pathname, req);
-        },
-      },
-    });
-
     const createdFetch = createFetch({
       client: fetch,
-      plugins: [myPlugin()],
+      plugins: [modifyUrlPlugin()],
     });
 
     const res = await createdFetch("https://example.com/api/v1/foo", {
@@ -109,24 +67,9 @@ describe("fetch:beforeRequest -", () => {
   });
 
   test.skip("signal", async () => {
-    const myPlugin = (): Plugin => ({
-      name: "myPlugin",
-      hooks: {
-        beforeRequest: async (req) => {
-          const controller = new AbortController();
-          setTimeout(() => {
-            controller.abort();
-          }, 1000);
-          return new Request(req.url, {
-            signal: controller.signal,
-          });
-        },
-      },
-    });
-
     const createdFetch = createFetch({
       client: fetch,
-      plugins: [myPlugin()],
+      plugins: [abortSignalPlugin()],
     });
 
     await expect(
