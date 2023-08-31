@@ -14,8 +14,7 @@ export const postMethodPlugin = (): Plugin => ({
   name: "postMethodPlugin",
   hooks: {
     beforeRequest: async (req) => {
-      return new Request(req.url, {
-        ...req,
+      return new Request(req, {
         method: "POST",
       });
     },
@@ -26,7 +25,7 @@ export const postMethodWithBodyPlugin = (): Plugin => ({
   name: "postMethodWithBodyPlugin",
   hooks: {
     beforeRequest: async (req) => {
-      return new Request(req.url, {
+      return new Request(req, {
         method: "POST",
         body: JSON.stringify({ foo: "bar" }),
       });
@@ -54,11 +53,8 @@ export const abortSignalPlugin = (): Plugin => ({
         controller.abort();
       }, 300);
 
-      return new Request(req.url, {
+      return new Request(req, {
         signal: controller.signal,
-        body: req.body,
-        method: req.method,
-        headers: req.headers,
       });
     },
   },
