@@ -82,9 +82,24 @@ async function extendClientRequest(
     clientRequest.headers.set(key, value, true);
   }
 
+  if (
+    adapterRequest.cache === "no-cache" ||
+    adapterRequest.cache === "no-store"
+  ) {
+    const url = new URL(adapterRequest.url);
+    const searchParams = new URLSearchParams(url.search);
+
+    searchParams.set("_", new Date().getTime().toString());
+
+    url.search = searchParams.toString();
+
+    clientRequest.url = url.toString();
+  } else {
+    clientRequest.url = adapterRequest.url;
+  }
+
   clientRequest.data = data;
   clientRequest.method = adapterRequest.method;
-  clientRequest.url = adapterRequest.url;
   clientRequest.signal = adapterRequest.signal;
   clientRequest.withCredentials = adapterRequest.credentials === "include";
 
