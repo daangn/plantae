@@ -38,11 +38,19 @@ function convertToAdapterRequest(
       : req.transformRequest(req.data, req.headers)
     : req.data;
 
+  const credentials =
+    req.withCredentials === true
+      ? "include"
+      : req.withCredentials === false
+      ? "omit"
+      : "same-origin";
+
   return new Request(url, {
     body: transformedData,
     method: req.method ?? "GET",
     headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
+    credentials,
   });
 }
 
@@ -78,6 +86,7 @@ async function extendClientRequest(
   clientRequest.method = adapterRequest.method;
   clientRequest.url = adapterRequest.url;
   clientRequest.signal = adapterRequest.signal;
+  clientRequest.withCredentials = adapterRequest.credentials === "include";
 
   return clientRequest;
 }

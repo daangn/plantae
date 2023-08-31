@@ -13,14 +13,6 @@ export type Plugin<Context = {}> = {
   context?: Context;
 };
 
-export type AdapterRequest = Pick<
-  Request,
-  "headers" | "method" | "url" | "signal"
-> &
-  Body;
+export type AdapterRequest = Request;
 
-export type AdapterResponse = Pick<
-  Response,
-  "headers" | "ok" | "status" | "statusText"
-> &
-  Body;
+export type AdapterResponse = Response;
