@@ -1,5 +1,11 @@
 # plantae
 
+## 0.0.0-20230906092242
+
+### Patch Changes
+
+- 8b60cd6: spread headers rather than using `toJSON`
+
 ## 0.1.6
 
 ### Patch Changes
