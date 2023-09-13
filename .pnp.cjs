@@ -34,7 +34,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ["@plantae/monorepo", ["workspace:."]],\
       ["@plantae/plugin-retry", ["workspace:packages/plugin-retry"]],\
       ["@plantae/plugin-timeout", ["workspace:packages/plugin-timeout"]],\
-      ["plantae", ["workspace:packages/plantae"]]\
+      ["plantae", ["virtual:96854191b901f00bae7ee17f87bafd9f04eb0b851aecfa2bf1161121e35a44ed99cbedf752bfe3372a164edc5c27f68594e06ada588679cab42b38e86b0d641d#workspace:packages/plantae", "workspace:packages/plantae"]]\
     ],\
     "fallbackPool": [\
     ],\
@@ -3615,7 +3615,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@plantae/plugin-retry", "workspace:packages/plugin-retry"],\
             ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
-            ["plantae", "workspace:packages/plantae"],\
+            ["plantae", "virtual:96854191b901f00bae7ee17f87bafd9f04eb0b851aecfa2bf1161121e35a44ed99cbedf752bfe3372a164edc5c27f68594e06ada588679cab42b38e86b0d641d#workspace:packages/plantae"],\
             ["rimraf", "npm:4.4.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
           ],\
@@ -3628,7 +3628,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@plantae/plugin-timeout", "workspace:packages/plugin-timeout"],\
             ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
-            ["plantae", "workspace:packages/plantae"],\
+            ["plantae", "virtual:96854191b901f00bae7ee17f87bafd9f04eb0b851aecfa2bf1161121e35a44ed99cbedf752bfe3372a164edc5c27f68594e06ada588679cab42b38e86b0d641d#workspace:packages/plantae"],\
             ["rimraf", "npm:4.4.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
           ],\
@@ -8072,6 +8072,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["plantae", [\
+        ["virtual:96854191b901f00bae7ee17f87bafd9f04eb0b851aecfa2bf1161121e35a44ed99cbedf752bfe3372a164edc5c27f68594e06ada588679cab42b38e86b0d641d#workspace:packages/plantae", {\
+          "packageLocation": "./.yarn/__virtual__/plantae-virtual-03152961b3/1/packages/plantae/",\
+          "packageDependencies": [\
+            ["plantae", "virtual:96854191b901f00bae7ee17f87bafd9f04eb0b851aecfa2bf1161121e35a44ed99cbedf752bfe3372a164edc5c27f68594e06ada588679cab42b38e86b0d641d#workspace:packages/plantae"],\
+            ["@types/axios", null],\
+            ["@types/ky", null],\
+            ["axios", "npm:1.5.0"],\
+            ["ky", "npm:1.0.1"],\
+            ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
+            ["rimraf", "npm:4.4.1"],\
+            ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
+          ],\
+          "packagePeers": [\
+            "@types/axios",\
+            "@types/ky"\
+          ],\
+          "linkType": "SOFT"\
+        }],\
         ["workspace:packages/plantae", {\
           "packageLocation": "./packages/plantae/",\
           "packageDependencies": [\

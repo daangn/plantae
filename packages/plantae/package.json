@@ -26,13 +26,23 @@
     "clean": "nanobundle clean"
   },
   "devDependencies": {
+    "axios": "^1",
+    "ky": "^1.0.1",
     "nanobundle": "^1.5.0",
     "rimraf": "^4.4.0",
     "typescript": "^5.1.3"
   },
-  "optionalDependencies": {
-    "axios": "1.x",
+  "peerDependencies": {
+    "axios": "^1",
     "ky": ">=0.16.0"
+  },
+  "peerDependenciesMeta": {
+    "axios": {
+      "optional": true
+    },
+    "ky": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public",
