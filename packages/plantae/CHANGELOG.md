@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.8
+
+### Patch Changes
+
+- 0871007: specify supporting clients version
+
 ## 0.1.7
 
 ### Patch Changes
