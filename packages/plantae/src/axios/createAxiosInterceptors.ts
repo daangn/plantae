@@ -48,7 +48,7 @@ function convertToAdapterRequest(
   return new Request(url, {
     body: transformedData,
     method: req.method ?? "GET",
-    headers: new Headers({ ...req.headers }),
+    headers: new Headers(req.headers.toJSON(true) as HeadersInit),
     signal: req.signal as AbortSignal,
     credentials,
   });
@@ -119,7 +119,7 @@ function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
     {
       status: res.status,
       statusText: res.statusText,
-      headers: new Headers({ ...headers }),
+      headers: new Headers(headers.toJSON(true) as HeadersInit),
     }
   );
 }
