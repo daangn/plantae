@@ -4301,11 +4301,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["axios", [\
-        ["npm:1.4.0", {\
-          "packageLocation": "./.yarn/cache/axios-npm-1.4.0-4d7ce8ca3e-7fb6a4313b.zip/node_modules/axios/",\
+        ["npm:1.5.0", {\
+          "packageLocation": "./.yarn/cache/axios-npm-1.5.0-35a845e191-e7405a5dbb.zip/node_modules/axios/",\
           "packageDependencies": [\
-            ["axios", "npm:1.4.0"],\
-            ["follow-redirects", "virtual:4d7ce8ca3e1e44d82523fba2ad95e1be18c4e9f8dec6d551377587540da3ed75bd8bd3e812280309a3b90cfdb0560f076f3552a20839f7f15665207a4fbd588a#npm:1.15.2"],\
+            ["axios", "npm:1.5.0"],\
+            ["follow-redirects", "virtual:35a845e191d5a8a7376e256c81e9e855732385142c5dc9e26f0b8393c2fb4673b81fed201d5f2c5ab96fb727142683ac03329eab760f2c4870779d4bda6abe8f#npm:1.15.2"],\
             ["form-data", "npm:4.0.0"],\
             ["proxy-from-env", "npm:1.1.0"]\
           ],\
@@ -6117,10 +6117,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:4d7ce8ca3e1e44d82523fba2ad95e1be18c4e9f8dec6d551377587540da3ed75bd8bd3e812280309a3b90cfdb0560f076f3552a20839f7f15665207a4fbd588a#npm:1.15.2", {\
-          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-359bc4c55c/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
+        ["virtual:35a845e191d5a8a7376e256c81e9e855732385142c5dc9e26f0b8393c2fb4673b81fed201d5f2c5ab96fb727142683ac03329eab760f2c4870779d4bda6abe8f#npm:1.15.2", {\
+          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-2e83874824/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
           "packageDependencies": [\
-            ["follow-redirects", "virtual:4d7ce8ca3e1e44d82523fba2ad95e1be18c4e9f8dec6d551377587540da3ed75bd8bd3e812280309a3b90cfdb0560f076f3552a20839f7f15665207a4fbd588a#npm:1.15.2"],\
+            ["follow-redirects", "virtual:35a845e191d5a8a7376e256c81e9e855732385142c5dc9e26f0b8393c2fb4673b81fed201d5f2c5ab96fb727142683ac03329eab760f2c4870779d4bda6abe8f#npm:1.15.2"],\
             ["@types/debug", null],\
             ["debug", null]\
           ],\
@@ -7069,10 +7069,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["ky", [\
-        ["npm:0.33.3", {\
-          "packageLocation": "./.yarn/cache/ky-npm-0.33.3-7d1cbfa9f4-d1869e1f33.zip/node_modules/ky/",\
+        ["npm:1.0.1", {\
+          "packageLocation": "./.yarn/cache/ky-npm-1.0.1-d514016863-1cc8237422.zip/node_modules/ky/",\
           "packageDependencies": [\
-            ["ky", "npm:0.33.3"]\
+            ["ky", "npm:1.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8076,8 +8076,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./packages/plantae/",\
           "packageDependencies": [\
             ["plantae", "workspace:packages/plantae"],\
-            ["axios", "npm:1.4.0"],\
-            ["ky", "npm:0.33.3"],\
+            ["axios", "npm:1.5.0"],\
+            ["ky", "npm:1.0.1"],\
             ["nanobundle", "virtual:ef454e318620f9ff0b672aebb2f9bf3518f2838eef6a3f99729c52ddd249347eac687f629fb273126fe364267e53542f583115f797ba8cd9b39ae838c2f97f76#npm:1.6.0"],\
             ["rimraf", "npm:4.4.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
