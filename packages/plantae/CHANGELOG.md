@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.9
+
+### Patch Changes
+
+- 0d34697: fix peerDependencies issue in yarn berry (pnp)
+
 ## 0.1.8
 
 ### Patch Changes
