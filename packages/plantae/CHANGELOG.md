@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.7
+
+### Patch Changes
+
+- f753143: make clients into optional dependency
+
 ## 0.1.6
 
 ### Patch Changes
