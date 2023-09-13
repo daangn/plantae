@@ -2724,7 +2724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.5.0":
+"axios@npm:1.x":
   version: 1.5.0
   resolution: "axios@npm:1.5.0"
   dependencies:
@@ -5027,7 +5027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ky@npm:^1.0.1":
+"ky@npm:>=0.16.0":
   version: 1.0.1
   resolution: "ky@npm:1.0.1"
   checksum: 1cc8237422b901417bcced1a1fd4d0b2c9b9140ef625fcb9c6c6b78f0e4ddf169e6ba97f497d8be31db0d8f6fb17ad63bcb03aef927b8d7d562d87db3da13474
@@ -5927,8 +5927,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "plantae@workspace:packages/plantae"
   dependencies:
-    axios: ^1.5.0
-    ky: ^1.0.1
+    axios: 1.x
+    ky: ">=0.16.0"
     nanobundle: ^1.5.0
     rimraf: ^4.4.0
     typescript: ^5.1.3

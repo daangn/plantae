@@ -31,8 +31,8 @@
     "typescript": "^5.1.3"
   },
   "optionalDependencies": {
-    "axios": "^1.5.0",
-    "ky": "^1.0.1"
+    "axios": "1.x",
+    "ky": ">=0.16.0"
   },
   "publishConfig": {
     "access": "public",
