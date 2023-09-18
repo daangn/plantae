@@ -7,6 +7,7 @@ import type {
 
 import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
+import { isArrayBuffer } from "../utils";
 
 type Interceptor<T extends keyof AxiosInstance["interceptors"]> = Parameters<
   AxiosInstance["interceptors"][T]["use"]
@@ -109,6 +110,10 @@ async function extendClientRequest(
 function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
   const headers = res.headers as AxiosResponseHeaders;
 
+  if (!res.config.responseType && isArrayBuffer(res.data)) {
+    res.config.responseType = "arraybuffer";
+  }
+
   return new Response(
     res.data !== null &&
     typeof res.data === "object" &&
@@ -149,6 +154,8 @@ async function extendClientResponse(
           headers.set("Content-Type", "application/json");
         }
       } catch {}
+    } else if (clientResponse.config.responseType === "arraybuffer") {
+      data = await adapterResponse.arrayBuffer();
     } else {
       data = await adapterResponse.blob();
     }
