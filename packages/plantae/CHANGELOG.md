@@ -1,5 +1,11 @@
 # plantae
 
+## 0.1.10
+
+### Patch Changes
+
+- 03e7076: fix: handle array buffer on axios adapter
+
 ## 0.1.9
 
 ### Patch Changes
