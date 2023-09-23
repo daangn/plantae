@@ -1,6 +1,6 @@
 import type { AxiosHeaders } from "axios";
 import axios from "axios";
-import { describe, expect, test } from "vitest";
+import { describe, expect, it, test } from "vitest";
 
 import {
   abortSignalPlugin,
@@ -14,6 +14,7 @@ import {
   modifyUrlPlugin,
   postMethodPlugin,
   postMethodWithBodyPlugin,
+  retryPlugin,
   secondPlugin,
 } from "../__mock__/plugin";
 import type { Plugin } from "../types";
@@ -257,5 +258,25 @@ describe("axios:beforeRequest+afterResponse -", () => {
     const res = await axiosInstance.get("/api/v1/foo");
 
     expect(res.headers["x-request-plugin"]).toBe("succeed");
+  });
+});
+
+describe("retry plugin", () => {
+  it("should retry", async () => {
+    const axiosInstance = axios.create({
+      baseURL: "https://example.com",
+    });
+
+    const { request, response } = createAxiosInterceptors({
+      client: axiosInstance,
+      plugins: [retryPlugin()],
+    });
+
+    axiosInstance.interceptors.request.use(request);
+    axiosInstance.interceptors.response.use(response);
+
+    const res = await axiosInstance.get("/header/x-retry");
+
+    expect(res.data).toHaveLength(1);
   });
 });

@@ -1,5 +1,5 @@
 import ky from "ky";
-import { describe, expect, test } from "vitest";
+import { describe, expect, it, test } from "vitest";
 
 import {
   abortSignalPlugin,
@@ -13,6 +13,7 @@ import {
   modifyUrlPlugin,
   postMethodPlugin,
   postMethodWithBodyPlugin,
+  retryPlugin,
   secondPlugin,
 } from "../__mock__/plugin";
 import createKyHooks from "./createKyHooks";
@@ -224,5 +225,24 @@ describe("ky:beforeRequest+afterResponse -", () => {
 
     const res = await kyWithHooks.get("https://example.com/api/v1/foo");
     expect(res.headers.get("x-request-plugin")).toBe("succeed");
+  });
+});
+
+describe("retry plugin", () => {
+  it("should retry", async () => {
+    const hooks = createKyHooks({
+      client: ky,
+      plugins: [retryPlugin()],
+    });
+
+    const kyWithHooks = ky.extend({
+      hooks,
+    });
+
+    const data = await kyWithHooks
+      .get("https://example.com/header/x-retry")
+      .then((res) => res.json());
+
+    expect(data).toHaveLength(1);
   });
 });

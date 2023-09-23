@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, it, test } from "vitest";
 
 import {
   abortSignalPlugin,
@@ -12,6 +12,7 @@ import {
   modifyUrlPlugin,
   postMethodPlugin,
   postMethodWithBodyPlugin,
+  retryPlugin,
   secondPlugin,
 } from "../__mock__/plugin";
 import createFetch from "./createFetch";
@@ -189,5 +190,19 @@ describe("fetch:beforeRequest+afterResponse -", () => {
     });
 
     expect(res.headers.get("x-request-plugin")).toBe("succeed");
+  });
+});
+
+describe("retry plugin", () => {
+  it("should retry", async () => {
+    const fetch = createFetch({
+      plugins: [retryPlugin()],
+    });
+
+    const data = await fetch("https://example.com/header/x-retry").then((res) =>
+      res.json()
+    );
+
+    expect(data).toHaveLength(1);
   });
 });

@@ -159,3 +159,19 @@ export const afterResponsePlugin = (): Plugin => ({
     },
   },
 });
+
+export const retryPlugin = (): Plugin => {
+  return {
+    name: "plugin-retry",
+    hooks: {
+      afterResponse: (res, req, retry) => {
+        if (!req.headers.get("x-retry")) {
+          req.headers.set("x-retry", "true");
+          return retry(req);
+        }
+
+        return res;
+      },
+    },
+  };
+};
