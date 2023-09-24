@@ -7,10 +7,18 @@ import type {
 
 import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
+import { isArrayBuffer } from "../utils";
 
-type Interceptor<T extends keyof AxiosInstance["interceptors"]> = Parameters<
+type InterceptorType = keyof AxiosInstance["interceptors"];
+
+type InterceptorParams<T extends InterceptorType> = Parameters<
   AxiosInstance["interceptors"][T]["use"]
->[0];
+>;
+
+type Interceptor<T extends InterceptorType> = {
+  onFulfilled: InterceptorParams<T>[0];
+  onRejected: InterceptorParams<T>[1];
+};
 
 function convertToAdapterRequest(
   req: InternalAxiosRequestConfig
@@ -82,9 +90,24 @@ async function extendClientRequest(
     clientRequest.headers.set(key, value, true);
   }
 
+  if (
+    adapterRequest.cache === "no-cache" ||
+    adapterRequest.cache === "no-store"
+  ) {
+    const url = new URL(adapterRequest.url);
+    const searchParams = new URLSearchParams(url.search);
+
+    searchParams.set("_", new Date().getTime().toString());
+
+    url.search = searchParams.toString();
+
+    clientRequest.url = url.toString();
+  } else {
+    clientRequest.url = adapterRequest.url;
+  }
+
   clientRequest.data = data;
   clientRequest.method = adapterRequest.method;
-  clientRequest.url = adapterRequest.url;
   clientRequest.signal = adapterRequest.signal;
   clientRequest.withCredentials = adapterRequest.credentials === "include";
 
@@ -93,6 +116,10 @@ async function extendClientRequest(
 
 function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
   const headers = res.headers as AxiosResponseHeaders;
+
+  if (!res.config.responseType && isArrayBuffer(res.data)) {
+    res.config.responseType = "arraybuffer";
+  }
 
   return new Response(
     res.data !== null &&
@@ -134,6 +161,8 @@ async function extendClientResponse(
           headers.set("Content-Type", "application/json");
         }
       } catch {}
+    } else if (clientResponse.config.responseType === "arraybuffer") {
+      data = await adapterResponse.arrayBuffer();
     } else {
       data = await adapterResponse.blob();
     }
@@ -162,8 +191,8 @@ const createAxiosInterceptors = ({
 } => {
   if (!plugins) {
     return {
-      request: (config) => config,
-      response: (response) => response,
+      request: { onFulfilled: (config) => config, onRejected: null },
+      response: { onFulfilled: (response) => response, onRejected: null },
     };
   }
 
@@ -177,9 +206,25 @@ const createAxiosInterceptors = ({
   });
 
   return {
-    request: requestMiddleware,
-    response: async (response) => {
-      return responseMiddleware(response, response.config);
+    request: {
+      onFulfilled: async (config) => {
+        return requestMiddleware(config);
+      },
+      onRejected: null,
+    },
+    response: {
+      onFulfilled: async (response) => {
+        return responseMiddleware(response, response.config);
+      },
+      onRejected: async (err: { response?: AxiosResponse }) => {
+        const { response } = err;
+
+        if (response && response.config) {
+          return responseMiddleware(response, response.config);
+        }
+
+        return Promise.reject(err);
+      },
     },
   };
 };

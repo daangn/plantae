@@ -1,5 +1,35 @@
 # plantae
 
+## 0.2.0
+
+### Minor Changes
+
+- c47f1e2: feat: implement onRejected interface (BREAKING CHANGE)
+
+## 0.1.10
+
+### Patch Changes
+
+- 03e7076: fix: handle array buffer on axios adapter
+
+## 0.1.9
+
+### Patch Changes
+
+- 0d34697: fix peerDependencies issue in yarn berry (pnp)
+
+## 0.1.8
+
+### Patch Changes
+
+- 0871007: specify supporting clients version
+
+## 0.1.7
+
+### Patch Changes
+
+- f753143: make clients into optional dependency
+
 ## 0.1.6
 
 ### Patch Changes
