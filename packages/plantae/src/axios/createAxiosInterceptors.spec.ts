@@ -17,7 +17,6 @@ import {
   retryPlugin,
   secondPlugin,
 } from "../__mock__/plugin";
-import type { Plugin } from "../types";
 import createAxiosInterceptors from "./createAxiosInterceptors";
 
 const BASE_URL = "https://example.com";
