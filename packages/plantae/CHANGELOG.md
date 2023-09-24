@@ -1,5 +1,11 @@
 # plantae
 
+## 0.2.0
+
+### Minor Changes
+
+- c47f1e2: feat: implement onRejected interface (BREAKING CHANGE)
+
 ## 0.1.10
 
 ### Patch Changes
