@@ -9,9 +9,16 @@ import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
 import { isArrayBuffer } from "../utils";
 
-type Interceptor<T extends keyof AxiosInstance["interceptors"]> = Parameters<
+type InterceptorType = keyof AxiosInstance["interceptors"];
+
+type InterceptorParams<T extends InterceptorType> = Parameters<
   AxiosInstance["interceptors"][T]["use"]
->[0];
+>;
+
+type Interceptor<T extends InterceptorType> = {
+  onFulfilled: InterceptorParams<T>[0];
+  onRejected: InterceptorParams<T>[1];
+};
 
 function convertToAdapterRequest(
   req: InternalAxiosRequestConfig
@@ -184,8 +191,8 @@ const createAxiosInterceptors = ({
 } => {
   if (!plugins) {
     return {
-      request: (config) => config,
-      response: (response) => response,
+      request: { onFulfilled: (config) => config, onRejected: null },
+      response: { onFulfilled: (response) => response, onRejected: null },
     };
   }
 
@@ -199,9 +206,25 @@ const createAxiosInterceptors = ({
   });
 
   return {
-    request: requestMiddleware,
-    response: async (response) => {
-      return responseMiddleware(response, response.config);
+    request: {
+      onFulfilled: async (config) => {
+        return requestMiddleware(config);
+      },
+      onRejected: null,
+    },
+    response: {
+      onFulfilled: async (response) => {
+        return responseMiddleware(response, response.config);
+      },
+      onRejected: async (err: { response?: AxiosResponse }) => {
+        const { response } = err;
+
+        if (response && response.config) {
+          return responseMiddleware(response, response.config);
+        }
+
+        return Promise.reject(err);
+      },
     },
   };
 };
