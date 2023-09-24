@@ -74,8 +74,8 @@ const { request, response } = createAxiosInterceptors({
   plugins: [myPlugin()],
 });
 
-myAxios.interceptors.request.use(request);
-myAxios.interceptors.response.use(response);
+myAxios.interceptors.request.use(request.onFulfilled, request.onRejected);
+myAxios.interceptors.response.use(response.onFulfilled, request.onRejected);
 
 export { myAxios };
 ```
