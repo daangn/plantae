@@ -27,12 +27,15 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [headerSetPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
 
     const res = await axiosInstance.get("/api/v1/foo");
     expect(res.data).toStrictEqual("request plugin is activated");
@@ -43,12 +46,15 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [postMethodPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
 
     const res = await axiosInstance.get("/api/v1/foo");
     expect(res.data).toEqual("post request is completed");
@@ -60,12 +66,15 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [postMethodWithBodyPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
 
     const res = await axiosInstance.post("/api/v1/bar", { hello: "world" });
     expect(res.data).toStrictEqual({ foo: "bar" });
@@ -76,12 +85,15 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [modifyUrlPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
 
     const res = await axiosInstance.get("/api/v1/foo");
     expect(res.data).toEqual("url is modified");
@@ -92,12 +104,15 @@ describe("axios:beforeRequest -", () => {
       baseURL: BASE_URL,
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [abortSignalPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
 
     await expect(axiosInstance.get("/api/v1/delayed")).rejects.toThrow();
   });
@@ -109,12 +124,15 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [modifiedHeaderResponsePlugin()],
     });
 
-    axiosInstance.interceptors.response.use(axiosMiddleware.response);
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
     const res = await axiosInstance.get("/api/v1/foo");
     const customHeader = (res.headers as AxiosHeaders)["x-foo"];
 
@@ -130,12 +148,15 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [modifiedResponseBodyPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(axiosMiddleware.response);
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
     const res = await axiosInstance.get("/api/v1/foo");
 
     expect(res.data).toBe("baz");
@@ -146,19 +167,25 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [firstPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(axiosMiddleware.response);
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
 
-    const overridenAxiosMiddleware = createAxiosInterceptors({
+    const { response: overridenResponse } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [secondPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(overridenAxiosMiddleware.response);
+    axiosInstance.interceptors.response.use(
+      overridenResponse.onFulfilled,
+      overridenResponse.onRejected
+    );
 
     const res = await axiosInstance.get("/api/v1/foo");
 
@@ -172,12 +199,15 @@ describe("axios:afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [firstPlugin(), secondPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(axiosMiddleware.response);
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
     const res = await axiosInstance.get("/api/v1/foo");
 
     expect(res.headers["x-first"]).toBe("foo");
@@ -192,13 +222,19 @@ describe("axios:beforeRequest+afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request, response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [headerSetRequestReseponsePlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
-    axiosInstance.interceptors.response.use(axiosMiddleware.response);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
     const res = await axiosInstance.get("/api/v1/foo");
 
     expect(res.headers["x-request-plugin"]).toBe("succeed");
@@ -209,13 +245,19 @@ describe("axios:beforeRequest+afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request, response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [beforeRequestPlugin(), afterResponsePlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
-    axiosInstance.interceptors.response.use(axiosMiddleware.response);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
     const res = await axiosInstance.get("/api/v1/foo");
 
     expect(res.headers["x-request-plugin"]).toBe("succeed");
@@ -226,13 +268,19 @@ describe("axios:beforeRequest+afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const axiosMiddleware = createAxiosInterceptors({
+    const { request, response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [afterResponsePlugin(), beforeRequestPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(axiosMiddleware.request);
-    axiosInstance.interceptors.response.use(axiosMiddleware.response);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
     const res = await axiosInstance.get("/api/v1/foo");
 
     expect(res.headers["x-request-plugin"]).toBe("succeed");
@@ -243,17 +291,23 @@ describe("axios:beforeRequest+afterResponse -", () => {
       baseURL: "https://example.com",
     });
 
-    const requestMiddleware = createAxiosInterceptors({
+    const { request } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [beforeRequestPlugin()],
     });
-    const responseMiddleware = createAxiosInterceptors({
+    const { response } = createAxiosInterceptors({
       client: axiosInstance,
       plugins: [afterResponsePlugin()],
     });
 
-    axiosInstance.interceptors.request.use(requestMiddleware.request);
-    axiosInstance.interceptors.response.use(responseMiddleware.response);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
     const res = await axiosInstance.get("/api/v1/foo");
 
     expect(res.headers["x-request-plugin"]).toBe("succeed");
@@ -271,8 +325,14 @@ describe("retry plugin", () => {
       plugins: [retryPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(request);
-    axiosInstance.interceptors.response.use(response);
+    axiosInstance.interceptors.request.use(
+      request.onFulfilled,
+      request.onRejected
+    );
+    axiosInstance.interceptors.response.use(
+      response.onFulfilled,
+      response.onRejected
+    );
 
     const res = await axiosInstance.get("/header/x-retry");
 
