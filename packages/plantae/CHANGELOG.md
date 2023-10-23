@@ -1,5 +1,11 @@
 # plantae
 
+## 0.2.1
+
+### Patch Changes
+
+- dbe98be: fix: transform body into null when having null body status
+
 ## 0.2.0
 
 ### Minor Changes
