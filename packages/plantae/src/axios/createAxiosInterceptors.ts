@@ -8,6 +8,7 @@ import type {
 import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
 import { isArrayBuffer, isNullBodyStatus } from "../utils";
+import settle from "./utils";
 
 type InterceptorType = keyof AxiosInstance["interceptors"];
 
@@ -225,7 +226,14 @@ const createAxiosInterceptors = ({
         const { response } = err;
 
         if (response && response.config) {
-          return responseMiddleware(response, response.config);
+          const middlewareResponse = await responseMiddleware(
+            response,
+            response.config
+          );
+
+          return new Promise((resolve, reject) => {
+            settle(resolve, reject, middlewareResponse);
+          });
         }
 
         return Promise.reject(err);
