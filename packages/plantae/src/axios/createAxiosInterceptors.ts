@@ -7,7 +7,7 @@ import type {
 
 import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
-import { isArrayBuffer } from "../utils";
+import { isArrayBuffer, isNullBodyStatus } from "../utils";
 
 type InterceptorType = keyof AxiosInstance["interceptors"];
 
@@ -127,11 +127,18 @@ function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
     (res.config.responseType === "json" ||
       (!res.config.responseType && res.config.transitional?.forcedJSONParsing));
 
-  return new Response(isJSONBody ? JSON.stringify(res.data) : res.data, {
-    status: res.status,
-    statusText: res.statusText,
-    headers: new Headers(headers.toJSON(true) as HeadersInit),
-  });
+  return new Response(
+    isJSONBody
+      ? JSON.stringify(res.data)
+      : isNullBodyStatus(res.status)
+      ? null
+      : res.data,
+    {
+      status: res.status,
+      statusText: res.statusText,
+      headers: new Headers(headers.toJSON(true) as HeadersInit),
+    }
+  );
 }
 
 async function extendClientResponse(

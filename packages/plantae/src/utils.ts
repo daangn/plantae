@@ -9,3 +9,7 @@ const kindOfTest = (type: string) => {
 };
 
 export const isArrayBuffer = kindOfTest("ArrayBuffer");
+
+// https://fetch.spec.whatwg.org/#statuses
+export const isNullBodyStatus = (status: number) =>
+  [101, 103, 204, 205, 304].includes(status);
