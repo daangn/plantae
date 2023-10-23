@@ -121,19 +121,17 @@ function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
     res.config.responseType = "arraybuffer";
   }
 
-  return new Response(
+  const isJSONBody =
     res.data !== null &&
     typeof res.data === "object" &&
     (res.config.responseType === "json" ||
-      (!res.config.responseType && res.config.transitional?.forcedJSONParsing))
-      ? JSON.stringify(res.data)
-      : res.data,
-    {
-      status: res.status,
-      statusText: res.statusText,
-      headers: new Headers(headers.toJSON(true) as HeadersInit),
-    }
-  );
+      (!res.config.responseType && res.config.transitional?.forcedJSONParsing));
+
+  return new Response(isJSONBody ? JSON.stringify(res.data) : res.data, {
+    status: res.status,
+    statusText: res.statusText,
+    headers: new Headers(headers.toJSON(true) as HeadersInit),
+  });
 }
 
 async function extendClientResponse(
