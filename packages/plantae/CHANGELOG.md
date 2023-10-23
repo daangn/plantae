@@ -1,5 +1,11 @@
 # plantae
 
+## 0.2.2
+
+### Patch Changes
+
+- a96136e: fix: settle middleware response for onRejected
+
 ## 0.2.1
 
 ### Patch Changes
