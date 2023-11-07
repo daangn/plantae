@@ -7,7 +7,8 @@ import type {
 
 import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
-import { isArrayBuffer } from "../utils";
+import { isArrayBuffer, isNullBodyStatus } from "../utils";
+import settle from "./utils";
 
 type InterceptorType = keyof AxiosInstance["interceptors"];
 
@@ -121,12 +122,17 @@ function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
     res.config.responseType = "arraybuffer";
   }
 
-  return new Response(
+  const isJSONBody =
     res.data !== null &&
     typeof res.data === "object" &&
     (res.config.responseType === "json" ||
-      (!res.config.responseType && res.config.transitional?.forcedJSONParsing))
+      (!res.config.responseType && res.config.transitional?.forcedJSONParsing));
+
+  return new Response(
+    isJSONBody
       ? JSON.stringify(res.data)
+      : isNullBodyStatus(res.status)
+      ? null
       : res.data,
     {
       status: res.status,
@@ -220,7 +226,14 @@ const createAxiosInterceptors = ({
         const { response } = err;
 
         if (response && response.config) {
-          return responseMiddleware(response, response.config);
+          const middlewareResponse = await responseMiddleware(
+            response,
+            response.config
+          );
+
+          return new Promise((resolve, reject) => {
+            settle(resolve, reject, middlewareResponse);
+          });
         }
 
         return Promise.reject(err);
