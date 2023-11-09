@@ -41,7 +41,7 @@ export const myFetch = createFetch({
 ### Ky
 
 ```ts
-import { createKyHooks } from "plantae";
+import { createKyHooks } from "plantae/ky";
 import myPlugin from "../myPlugin";
 import ky from "ky";
 
@@ -63,7 +63,7 @@ ky("https://example.com", {
 ### Axios
 
 ```ts
-import { createAxiosInterceptors } from "plantae";
+import { createAxiosInterceptors } from "plantae/axios";
 import myPlugin from "../myPlugin";
 import axios from "axios";
 
