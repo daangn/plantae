@@ -12,6 +12,16 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
+    },
+    "./axios": {
+      "types": "./dist/axios/index.d.ts",
+      "require": "./dist/axios/index.js",
+      "import": "./dist/axios/index.mjs"
+    },
+    "./ky": {
+      "types": "./dist/ky/index.d.ts",
+      "require": "./dist/ky/index.js",
+      "import": "./dist/ky/index.mjs"
     }
   },
   "main": "./dist/index.mjs",
