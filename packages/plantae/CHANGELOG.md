@@ -1,5 +1,11 @@
 # plantae
 
+## 0.3.0
+
+### Minor Changes
+
+- ad22838: feat!: divide `axios` and `ky` into subpackages
+
 ## 0.2.3
 
 ### Patch Changes
