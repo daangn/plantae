@@ -1,5 +1,17 @@
 # plantae
 
+## 0.3.0
+
+### Minor Changes
+
+- ad22838: feat!: divide `axios` and `ky` into subpackages
+
+## 0.2.3
+
+### Patch Changes
+
+- 8f74eb6: fix: import axios dynamically
+
 ## 0.2.2
 
 ### Patch Changes
