@@ -1,19 +1,23 @@
+import type { StrictResponse } from "msw";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 
 export const BASE_URL = "https://example.com";
 
 const handlers = [
-  http.get("https://example.com/api/v1/foo", ({ request }) => {
-    if (request.headers.get("x-request-plugin") === "activate") {
-      return HttpResponse.text("request plugin is activated");
-    }
+  http.get(
+    "https://example.com/api/v1/foo",
+    ({ request }): StrictResponse<any> => {
+      if (request.headers.get("x-request-plugin") === "activate") {
+        return HttpResponse.text("request plugin is activated");
+      }
 
-    const mockJson = {
-      foo: "bar",
-    };
-    return HttpResponse.json(mockJson);
-  }),
+      const mockJson = {
+        foo: "bar",
+      };
+      return HttpResponse.json(mockJson);
+    }
+  ),
   http.post("https://example.com/api/v1/foo", () => {
     return HttpResponse.text("post request is completed");
   }),
