@@ -1,19 +1,32 @@
 import type { Plugin } from "../types";
+import { baseURL } from "./handler";
 
-export const headerSetPlugin = (): Plugin => ({
-  name: "headerSetPlugin",
+export const modifyRequestBodyPlugin = (): Plugin => ({
+  name: "plugin-modify-request-body",
   hooks: {
-    beforeRequest: async (req) => {
-      req.headers.set("x-request-plugin", "activate");
+    beforeRequest: (req) => {
+      return new Request(req, {
+        body: "modified",
+        method: "POST",
+      });
+    },
+  },
+});
+
+export const modifyRequestHeadersPlugin = (): Plugin => ({
+  name: "plugin-modify-request-headers",
+  hooks: {
+    beforeRequest: (req) => {
+      req.headers.set("x-custom-header", "modified");
       return req;
     },
   },
 });
 
-export const postMethodPlugin = (): Plugin => ({
-  name: "postMethodPlugin",
+export const modifyRequestMethodPlugin = (): Plugin => ({
+  name: "plugin-modify-request-method",
   hooks: {
-    beforeRequest: async (req) => {
+    beforeRequest: (req) => {
       return new Request(req, {
         method: "POST",
       });
@@ -21,157 +34,105 @@ export const postMethodPlugin = (): Plugin => ({
   },
 });
 
-export const postMethodWithBodyPlugin = (): Plugin => ({
-  name: "postMethodWithBodyPlugin",
+export const modifyRequestUrlPlugin = (): Plugin => ({
+  name: "plugin-modify-request-url",
   hooks: {
-    beforeRequest: async (req) => {
-      return new Request(req, {
-        method: "POST",
-        body: JSON.stringify({ foo: "bar" }),
-      });
+    beforeRequest: () => {
+      return new Request(`${baseURL}/modified`);
     },
   },
 });
 
-export const modifyUrlPlugin = (): Plugin => ({
-  name: "modifyUrlPlugin",
+export const addRequestSignalPlugin = (): Plugin => ({
+  name: "plugin-add-request-signal",
   hooks: {
-    beforeRequest: async (req) => {
-      const url = new URL(req.url);
+    beforeRequest: () => {
+      const abortController = new AbortController();
 
-      return new Request("https://example-second.com" + url.pathname, req);
-    },
-  },
-});
-
-export const abortSignalPlugin = (): Plugin => ({
-  name: "abortSignalPlugin",
-  hooks: {
-    beforeRequest: async (req) => {
-      const controller = new AbortController();
       setTimeout(() => {
-        controller.abort();
-      }, 300);
+        abortController.abort();
+      }, 100);
 
-      return new Request(req, {
-        signal: controller.signal,
+      return new Request(`${baseURL}/delay`, {
+        signal: abortController.signal,
       });
     },
   },
 });
 
-export const modifiedHeaderResponsePlugin = (): Plugin => ({
-  name: "modifiedHeaderResponsePlugin",
+export const modifyRequestCredentialsPlugin = (): Plugin => ({
+  name: "plugin-modify-request-credentials",
   hooks: {
-    afterResponse: async (res) => {
-      res.headers.set("x-foo", "bar");
+    beforeRequest: (req) => {
+      return new Request(req, {
+        credentials: "omit",
+      });
+    },
+  },
+});
+
+export const modifyRequestCachePlugin = (): Plugin => ({
+  name: "plugin-modify-request-credentials",
+  hooks: {
+    beforeRequest: (req) => {
+      return new Request(req, {
+        cache: "no-cache",
+      });
+    },
+  },
+});
+
+export const modifyResponseBodyPlugin = (): Plugin => ({
+  name: "plugin-modify-response-body",
+  hooks: {
+    afterResponse: (res) => new Response("modified", res),
+  },
+});
+
+export const modifyResponseHeadersPlugin = (): Plugin => ({
+  name: "plugin-modify-response-headers",
+  hooks: {
+    afterResponse: (res) => {
+      res.headers.set("x-custom-header", "modified");
       return res;
     },
   },
 });
 
-export const modifiedResponseBodyPlugin = (): Plugin => ({
-  name: "modifiedResponseBodyPlugin",
+export const modifyResponseStatusPlugin = (): Plugin => ({
+  name: "plugin-modify-response-status",
   hooks: {
-    afterResponse: async () => {
-      return new Response("baz");
-    },
+    afterResponse: (res) =>
+      new Response(res.body, {
+        headers: res.headers,
+        statusText: res.statusText,
+        status: 201,
+      }),
   },
 });
 
-export const firstPlugin = (): Plugin => ({
-  name: "firstForOverridePlugin",
+export const modifyResponseStatusTextPlugin = (): Plugin => ({
+  name: "plugin-modify-status-text",
   hooks: {
-    afterResponse: async (res) => {
-      res.headers.set("x-first", "foo");
-
-      return new Response("first", {
+    afterResponse: (res) =>
+      new Response(res.body, {
         headers: res.headers,
-      });
-    },
-  },
-});
-export const secondPlugin = (): Plugin => ({
-  name: "secondForOverridePlugin",
-  hooks: {
-    afterResponse: async (res) => {
-      res.headers.set("x-second", "bar");
-
-      return new Response("second", {
-        headers: res.headers,
-      });
-    },
+        status: res.status,
+        statusText: "modified",
+      }),
   },
 });
 
-export const headerSetRequestReseponsePlugin = (): Plugin => ({
-  name: "headerSetRequestReseponsePlugin",
+export const retryRequestPlugin = (): Plugin => ({
+  name: "plugin-retry-request",
   hooks: {
-    beforeRequest: async (req) => {
-      req.headers.set("x-request-plugin", "activate");
-      return req;
-    },
-    afterResponse: async (res) => {
-      const data = await res.text();
+    afterResponse: async (res, req, retry) => {
+      if (!res.ok) {
+        const newReq = new Request(`${baseURL}/retry`, req);
 
-      const newResponse = new Response(data, {
-        headers: res.headers,
-      });
-
-      if (data === "request plugin is activated") {
-        newResponse.headers.set("x-request-plugin", "succeed");
-        return newResponse;
+        return retry(newReq);
       }
-
-      newResponse.headers.set("x-request-plugin", "failed");
-      return newResponse;
+      return res;
     },
   },
 });
-
-export const beforeRequestPlugin = (): Plugin => ({
-  name: "beforeRequestPlugin",
-  hooks: {
-    beforeRequest: async (req) => {
-      req.headers.set("x-request-plugin", "activate");
-      return req;
-    },
-  },
-});
-
-export const afterResponsePlugin = (): Plugin => ({
-  name: "afterResponsePlugin",
-  hooks: {
-    afterResponse: async (res) => {
-      const data = await res.text();
-
-      const newResponse = new Response(data, {
-        headers: res.headers,
-      });
-
-      if (data === "request plugin is activated") {
-        newResponse.headers.set("x-request-plugin", "succeed");
-        return newResponse;
-      }
-
-      newResponse.headers.set("x-request-plugin", "failed");
-      return newResponse;
-    },
-  },
-});
-
-export const retryPlugin = (): Plugin => {
-  return {
-    name: "plugin-retry",
-    hooks: {
-      afterResponse: (res, req, retry) => {
-        if (!req.headers.get("x-retry")) {
-          req.headers.set("x-retry", "true");
-          return retry(req);
-        }
-
-        return res;
-      },
-    },
-  };
-};

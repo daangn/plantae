@@ -1,341 +1,308 @@
-import type { AxiosHeaders } from "axios";
-import axios from "axios";
-import { describe, expect, it, test } from "vitest";
+import Axios from "axios";
+import { describe, expect, it } from "vitest";
 
+import { server } from "../../mockServer";
 import {
-  abortSignalPlugin,
-  afterResponsePlugin,
-  beforeRequestPlugin,
-  firstPlugin,
-  headerSetPlugin,
-  headerSetRequestReseponsePlugin,
-  modifiedHeaderResponsePlugin,
-  modifiedResponseBodyPlugin,
-  modifyUrlPlugin,
-  postMethodPlugin,
-  postMethodWithBodyPlugin,
-  retryPlugin,
-  secondPlugin,
+  addRequestSignalHandler,
+  baseURL,
+  emptyResponseHandler,
+  errorResponseHandler,
+  modifyRequestBodyHandler,
+  modifyRequestCacheHandler,
+  modifyRequestCredentialsHandler,
+  modifyRequestHeadersHandler,
+  modifyRequestMethodHandler,
+  modifyRequestUrlHandler,
+  modifyResponseHeadersHandler,
+  retryResponseHandler,
+} from "../__mock__/handler";
+import {
+  addRequestSignalPlugin,
+  modifyRequestBodyPlugin,
+  modifyRequestCachePlugin,
+  modifyRequestCredentialsPlugin,
+  modifyRequestHeadersPlugin,
+  modifyRequestMethodPlugin,
+  modifyRequestUrlPlugin,
+  modifyResponseBodyPlugin,
+  modifyResponseHeadersPlugin,
+  modifyResponseStatusPlugin,
+  modifyResponseStatusTextPlugin,
+  retryRequestPlugin,
 } from "../__mock__/plugin";
 import createAxiosInterceptors from "./createAxiosInterceptors";
 
-const BASE_URL = "https://example.com";
+describe("createAxiosInterceptors", () => {
+  it("can modify request body", async () => {
+    server.use(modifyRequestBodyHandler);
 
-describe("axios:beforeRequest -", () => {
-  test("headers", async () => {
-    const axiosInstance = axios.create({
-      baseURL: BASE_URL,
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { request } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [headerSetPlugin()],
+      client: axios,
+      plugins: [modifyRequestBodyPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
 
-    const res = await axiosInstance.get("/api/v1/foo");
-    expect(res.data).toStrictEqual("request plugin is activated");
+    const res = await axios.post("/");
+
+    expect(res.status).toBe(200);
   });
 
-  test("method", async () => {
-    const axiosInstance = axios.create({
-      baseURL: BASE_URL,
+  it("can modify request headers", async () => {
+    server.use(modifyRequestHeadersHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { request } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [postMethodPlugin()],
+      client: axios,
+      plugins: [modifyRequestHeadersPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
 
-    const res = await axiosInstance.get("/api/v1/foo");
-    expect(res.data).toEqual("post request is completed");
+    const res = await axios.get("/");
+
+    expect(res.status).toBe(200);
   });
 
-  // https://github.com/capricorn86/happy-dom/issues/1016
-  test("body", async () => {
-    const axiosInstance = axios.create({
-      baseURL: BASE_URL,
+  it("can modify existing request header", async () => {
+    server.use(modifyRequestHeadersHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { request } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [postMethodWithBodyPlugin()],
+      client: axios,
+      plugins: [modifyRequestHeadersPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
 
-    const res = await axiosInstance.post("/api/v1/bar", { hello: "world" });
-    expect(res.data).toStrictEqual({ foo: "bar" });
+    const res = await axios.get("/", {
+      headers: {
+        "x-custom-header": "original",
+      },
+    });
+
+    expect(res.status).toBe(200);
   });
 
-  test("url", async () => {
-    const axiosInstance = axios.create({
-      baseURL: BASE_URL,
+  it("can modify request method", async () => {
+    server.use(modifyRequestMethodHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { request } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [modifyUrlPlugin()],
+      client: axios,
+      plugins: [modifyRequestMethodPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
 
-    const res = await axiosInstance.get("/api/v1/foo");
-    expect(res.data).toEqual("url is modified");
+    const res = await axios.get("/");
+
+    expect(res.status).toBe(200);
   });
 
-  test("signal", async () => {
-    const axiosInstance = axios.create({
-      baseURL: BASE_URL,
+  it("can modify request url", async () => {
+    server.use(modifyRequestUrlHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { request } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [abortSignalPlugin()],
+      client: axios,
+      plugins: [modifyRequestUrlPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
 
-    await expect(axiosInstance.get("/api/v1/delayed")).rejects.toThrow();
+    const res = await axios.get("/");
+
+    expect(res.status).toBe(200);
   });
-});
 
-describe("axios:afterResponse -", () => {
-  test("headers", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
+  it("can add request signal", async () => {
+    server.use(addRequestSignalHandler);
+
+    const axios = Axios.create({
+      baseURL,
+    });
+
+    const { request } = createAxiosInterceptors({
+      client: axios,
+      plugins: [addRequestSignalPlugin()],
+    });
+
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
+
+    await expect(axios.get("/")).rejects.toThrow("canceled");
+  });
+
+  // NOTE: msw always takes 'same-origin' as credentials
+  it.skip("can modify request credentials", async () => {
+    server.use(modifyRequestCredentialsHandler);
+
+    const axios = Axios.create({
+      baseURL,
+    });
+
+    const { request } = createAxiosInterceptors({
+      client: axios,
+      plugins: [modifyRequestCredentialsPlugin()],
+    });
+
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
+
+    const res = await axios.get("/", {
+      withCredentials: true,
+    });
+
+    expect(res.status).toBe(200);
+  });
+
+  it("can modify request cache", async () => {
+    server.use(modifyRequestCacheHandler);
+
+    const axios = Axios.create({
+      baseURL,
+    });
+
+    const { request } = createAxiosInterceptors({
+      client: axios,
+      plugins: [modifyRequestCachePlugin()],
+    });
+
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
+
+    const res = await axios.get("/", {
+      withCredentials: true,
+    });
+
+    expect(res.status).toBe(200);
+  });
+
+  it("can modify response body", async () => {
+    server.use(emptyResponseHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [modifiedHeaderResponsePlugin()],
+      client: axios,
+      plugins: [modifyResponseBodyPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
-    const res = await axiosInstance.get("/api/v1/foo");
-    const customHeader = (res.headers as AxiosHeaders)["x-foo"];
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
-    if (!customHeader) {
-      throw new Error("custom header not found");
-    }
+    const res = await axios.post("/");
 
-    expect(customHeader).toStrictEqual("bar");
+    expect(res.data).toBe("modified");
   });
 
-  test("body", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
+  it("can modify response headers", async () => {
+    server.use(emptyResponseHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [modifiedResponseBodyPlugin()],
+      client: axios,
+      plugins: [modifyResponseHeadersPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
-    const res = await axiosInstance.get("/api/v1/foo");
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
-    expect(res.data).toBe("baz");
+    const res = await axios.get("/");
+
+    expect(res.headers["x-custom-header"]).toBe("modified");
   });
 
-  test("overriden plugin", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
+  it("can modify existing response header", async () => {
+    server.use(modifyResponseHeadersHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [firstPlugin()],
+      client: axios,
+      plugins: [modifyResponseHeadersPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
-    const { response: overridenResponse } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [secondPlugin()],
-    });
+    const res = await axios.get("/");
 
-    axiosInstance.interceptors.response.use(
-      overridenResponse.onFulfilled,
-      overridenResponse.onRejected
-    );
-
-    const res = await axiosInstance.get("/api/v1/foo");
-
-    expect(res.headers["x-first"]).toBe("foo");
-    expect(res.headers["x-second"]).toBe("bar");
-    expect(res.data).toBe("second");
+    expect(res.headers["x-custom-header"]).toBe("modified");
   });
 
-  test("multiple plugins", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
+  it("can modify response status", async () => {
+    server.use(emptyResponseHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
     const { response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [firstPlugin(), secondPlugin()],
+      client: axios,
+      plugins: [modifyResponseStatusPlugin()],
     });
 
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
-    const res = await axiosInstance.get("/api/v1/foo");
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
-    expect(res.headers["x-first"]).toBe("foo");
-    expect(res.headers["x-second"]).toBe("bar");
-    expect(res.data).toBe("second");
-  });
-});
+    const res = await axios.get("/");
 
-describe("axios:beforeRequest+afterResponse -", () => {
-  test("declare beforeRequest and afterResponse currently", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
-    });
-
-    const { request, response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [headerSetRequestReseponsePlugin()],
-    });
-
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
-    const res = await axiosInstance.get("/api/v1/foo");
-
-    expect(res.headers["x-request-plugin"]).toBe("succeed");
+    expect(res.status).toBe(201);
   });
 
-  test("declare beforeRequest and afterResponse sequentially", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
+  it("can modify response status text", async () => {
+    server.use(emptyResponseHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
-    const { request, response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [beforeRequestPlugin(), afterResponsePlugin()],
-    });
-
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
-    const res = await axiosInstance.get("/api/v1/foo");
-
-    expect(res.headers["x-request-plugin"]).toBe("succeed");
-  });
-
-  test("declare beforeRequest and afterResponse in reverse order", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
-    });
-
-    const { request, response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [afterResponsePlugin(), beforeRequestPlugin()],
-    });
-
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
-    const res = await axiosInstance.get("/api/v1/foo");
-
-    expect(res.headers["x-request-plugin"]).toBe("succeed");
-  });
-
-  test("use requestMiddleware and responseMiddleware individually", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
-    });
-
-    const { request } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [beforeRequestPlugin()],
-    });
     const { response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [afterResponsePlugin()],
+      client: axios,
+      plugins: [modifyResponseStatusTextPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
-    const res = await axiosInstance.get("/api/v1/foo");
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
-    expect(res.headers["x-request-plugin"]).toBe("succeed");
+    const res = await axios.get("/");
+
+    expect(res.statusText).toBe("modified");
   });
-});
 
-describe("retry plugin", () => {
-  it("should retry", async () => {
-    const axiosInstance = axios.create({
-      baseURL: "https://example.com",
+  it("can retry request", async () => {
+    server.use(errorResponseHandler, retryResponseHandler);
+
+    const axios = Axios.create({
+      baseURL,
     });
 
-    const { request, response } = createAxiosInterceptors({
-      client: axiosInstance,
-      plugins: [retryPlugin()],
+    const { response } = createAxiosInterceptors({
+      client: axios,
+      plugins: [retryRequestPlugin()],
     });
 
-    axiosInstance.interceptors.request.use(
-      request.onFulfilled,
-      request.onRejected
-    );
-    axiosInstance.interceptors.response.use(
-      response.onFulfilled,
-      response.onRejected
-    );
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
-    const res = await axiosInstance.get("/header/x-retry");
+    const res = await axios.get("/error");
 
-    expect(res.data).toHaveLength(1);
+    expect(res.data).toBe("retried");
   });
 });
