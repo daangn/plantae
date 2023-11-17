@@ -306,9 +306,7 @@ describe("createAxiosInterceptors", () => {
 
     axios.interceptors.request.use(request.onFulfilled, request.onRejected);
 
-    const res = await axios.get("/", {
-      withCredentials: true,
-    });
+    const res = await axios.get("/");
 
     expect(res.status).toBe(Status.OK);
   });
