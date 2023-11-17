@@ -371,7 +371,7 @@ describe("createAxiosInterceptors", () => {
   it("can modify existing response header", async () => {
     server.use(
       http.get(
-        `${baseURL}/`,
+        base("/"),
         () =>
           new Response(undefined, {
             headers: {
@@ -479,12 +479,12 @@ describe("createAxiosInterceptors", () => {
 
   it("can retry request", async () => {
     server.use(
-      http.get(`${baseURL}/error`, async () => {
+      http.get(base("/error"), async () => {
         return new Response(null, {
           status: 500,
         });
       }),
-      http.get(`${baseURL}/retry`, () => new Response("retried"))
+      http.get(base("/retry"), () => new Response("retried"))
     );
 
     const axios = Axios.create({
@@ -499,7 +499,7 @@ describe("createAxiosInterceptors", () => {
           hooks: {
             afterResponse: async (res, req, retry) => {
               if (!res.ok) {
-                const newReq = new Request(`${baseURL}/retry`, req);
+                const newReq = new Request(base("/retry"), req);
 
                 return retry(newReq);
               }
