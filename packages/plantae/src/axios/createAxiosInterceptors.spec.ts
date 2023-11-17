@@ -191,7 +191,7 @@ describe("createAxiosInterceptors", () => {
 
   it("can add request signal", async () => {
     server.use(
-      http.all(base("/delay"), async () => {
+      http.get(base("/delay"), async () => {
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
         return new Response();
@@ -370,7 +370,7 @@ describe("createAxiosInterceptors", () => {
 
   it("can modify existing response header", async () => {
     server.use(
-      http.all(
+      http.get(
         `${baseURL}/`,
         () =>
           new Response(undefined, {
@@ -479,12 +479,12 @@ describe("createAxiosInterceptors", () => {
 
   it("can retry request", async () => {
     server.use(
-      http.all(`${baseURL}/error`, async () => {
+      http.get(`${baseURL}/error`, async () => {
         return new Response(null, {
           status: 500,
         });
       }),
-      http.all(`${baseURL}/retry`, () => new Response("retried"))
+      http.get(`${baseURL}/retry`, () => new Response("retried"))
     );
 
     const axios = Axios.create({
