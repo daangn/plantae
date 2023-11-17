@@ -2,6 +2,13 @@ import { http, HttpResponse } from "msw";
 
 export const baseURL = "https://localhost";
 
+export const base = (path: string) => `${baseURL}${path}`;
+
+export const Status = {
+  OK: 200,
+  BAD: 400,
+} as const;
+
 export function createMatcherHandler(
   path: string,
   matcher: (req: Request) => Promise<boolean>
