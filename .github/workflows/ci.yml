@@ -28,6 +28,11 @@ jobs:
           yarn install --immutable
         shell: bash
 
+      - name: Build
+        run: |
+          yarn build
+        shell: bash
+
       - name: Typecheck
         run: |
           yarn typecheck
