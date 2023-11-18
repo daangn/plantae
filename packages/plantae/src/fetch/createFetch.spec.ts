@@ -155,7 +155,6 @@ describe("createAxiosInterceptors", () => {
     expect(res.status).toBe(Status.OK);
   });
 
-  // NOTE: happy-dom does not support signal on fetch
   it("can add request signal", async () => {
     server.use(
       http.get(base("/delay"), async () => {
@@ -189,7 +188,6 @@ describe("createAxiosInterceptors", () => {
     await expect(fetch(base("/"))).rejects.toThrow();
   });
 
-  // NOTE: msw always takes 'same-origin' as credentials
   it("can modify request credentials", async () => {
     server.use(
       http.get(
