@@ -3,5 +3,5 @@
   "compilerOptions": {
     "outDir": "./dist"
   },
-  "exclude": ["./dist", "**/*.spec.ts", "./src/__mock__"]
+  "exclude": ["./dist", "**/*.spec.ts"]
 }

@@ -1,8 +1,8 @@
 import { http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { server } from "../../setupTest";
-import { base, Status } from "../__mock__/handler";
+import { base, Status } from "../test/utils";
+import { server } from "../test/worker";
 import createFetch from "./createFetch";
 
 describe("createAxiosInterceptors", () => {

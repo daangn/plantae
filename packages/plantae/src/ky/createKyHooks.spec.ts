@@ -2,8 +2,8 @@ import Ky from "ky";
 import { http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { server } from "../../setupTest";
-import { base, baseURL, Status } from "../__mock__/handler";
+import { base, baseURL, Status } from "../test/utils";
+import { server } from "../test/worker";
 import createKyHooks from "./createKyHooks";
 
 describe("createkyInterceptors", () => {

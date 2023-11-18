@@ -2,8 +2,8 @@ import Axios from "axios";
 import { http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { server } from "../../setupTest";
-import { base, baseURL, Status } from "../__mock__/handler";
+import { base, baseURL, Status } from "../test/utils";
+import { server } from "../test/worker";
 import createAxiosInterceptors from "./createAxiosInterceptors";
 
 describe("createAxiosInterceptors", () => {
