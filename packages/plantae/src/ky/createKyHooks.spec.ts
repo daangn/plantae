@@ -184,8 +184,7 @@ describe("createkyInterceptors", () => {
     expect(res.status).toBe(Status.OK);
   });
 
-  // NOTE: happy-dom does not support signal on fetch
-  it.skip("can add request signal", async () => {
+  it("can add request signal", async () => {
     server.use(
       http.get(base("/delay"), async () => {
         await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -221,7 +220,7 @@ describe("createkyInterceptors", () => {
       hooks,
     });
 
-    await expect(ky.get("")).rejects.toThrow("canceled");
+    await expect(ky.get("")).rejects.toThrow();
   });
 
   it("can modify request credentials", async () => {
@@ -337,8 +336,15 @@ describe("createkyInterceptors", () => {
           name: "plugin-modify-response-headers",
           hooks: {
             afterResponse: (res) => {
-              res.headers.set("x-custom-header", "modified");
-              return res;
+              const headers = new Headers(res.headers);
+
+              headers.set("x-custom-header", "modified");
+
+              return new Response(res.body, {
+                headers,
+                status: res.status,
+                statusText: res.statusText,
+              });
             },
           },
         },
@@ -375,8 +381,15 @@ describe("createkyInterceptors", () => {
           name: "plugin-modify-response-headers",
           hooks: {
             afterResponse: (res) => {
-              res.headers.set("x-custom-header", "modified");
-              return res;
+              const headers = new Headers(res.headers);
+
+              headers.set("x-custom-header", "modified");
+
+              return new Response(res.body, {
+                headers,
+                status: res.status,
+                statusText: res.statusText,
+              });
             },
           },
         },

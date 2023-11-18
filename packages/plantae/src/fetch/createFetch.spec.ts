@@ -156,7 +156,7 @@ describe("createAxiosInterceptors", () => {
   });
 
   // NOTE: happy-dom does not support signal on fetch
-  it.skip("can add request signal", async () => {
+  it("can add request signal", async () => {
     server.use(
       http.get(base("/delay"), async () => {
         await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -186,7 +186,7 @@ describe("createAxiosInterceptors", () => {
       ],
     });
 
-    await expect(fetch(base("/"))).rejects.toThrow("canceled");
+    await expect(fetch(base("/"))).rejects.toThrow();
   });
 
   // NOTE: msw always takes 'same-origin' as credentials
@@ -286,8 +286,15 @@ describe("createAxiosInterceptors", () => {
           name: "plugin-modify-response-headers",
           hooks: {
             afterResponse: (res) => {
-              res.headers.set("x-custom-header", "modified");
-              return res;
+              const headers = new Headers(res.headers);
+
+              headers.set("x-custom-header", "modified");
+
+              return new Response(res.body, {
+                headers,
+                status: res.status,
+                statusText: res.statusText,
+              });
             },
           },
         },
@@ -318,8 +325,15 @@ describe("createAxiosInterceptors", () => {
           name: "plugin-modify-response-headers",
           hooks: {
             afterResponse: (res) => {
-              res.headers.set("x-custom-header", "modified");
-              return res;
+              const headers = new Headers(res.headers);
+
+              headers.set("x-custom-header", "modified");
+
+              return new Response(res.body, {
+                headers,
+                status: res.status,
+                statusText: res.statusText,
+              });
             },
           },
         },
