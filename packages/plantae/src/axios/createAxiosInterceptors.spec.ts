@@ -2,7 +2,7 @@ import Axios from "axios";
 import { http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { server } from "../../mockServer";
+import { server } from "../../setupTest";
 import { base, baseURL, Status } from "../__mock__/handler";
 import createAxiosInterceptors from "./createAxiosInterceptors";
 

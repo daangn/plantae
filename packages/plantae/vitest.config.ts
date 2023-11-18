@@ -2,7 +2,16 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    environment: "happy-dom",
-    setupFiles: "./setupTest.ts",
+    browser: {
+      enabled: true,
+      name: "chrome",
+      headless: true,
+    },
+    poolOptions: {
+      threads: {
+        singleThread: true,
+      },
+    },
   },
+  publicDir: "./public",
 });

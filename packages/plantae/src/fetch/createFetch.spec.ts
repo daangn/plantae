@@ -1,7 +1,7 @@
 import { http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { server } from "../../mockServer";
+import { server } from "../../setupTest";
 import { base, Status } from "../__mock__/handler";
 import createFetch from "./createFetch";
 

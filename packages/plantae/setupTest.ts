@@ -1,13 +1,12 @@
-import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
+import { setupWorker } from "msw/browser";
+import { afterAll, afterEach, beforeAll } from "vitest";
 
-import { server } from "./mockServer";
+export const server = setupWorker();
 
-beforeAll(() => {
-  server.listen();
-});
-
-beforeEach(() => {
-  location.replace(`http://localhost`);
+beforeAll(async () => {
+  await server.start({
+    quiet: true,
+  });
 });
 
 afterEach(() => {
@@ -15,5 +14,5 @@ afterEach(() => {
 });
 
 afterAll(() => {
-  server.close();
+  server.stop();
 });

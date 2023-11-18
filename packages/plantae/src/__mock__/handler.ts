@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 
-export const baseURL = "https://localhost";
+export const baseURL = "http://localhost:5173/api";
 
 export const base = (path: string) => `${baseURL}${path}`;
 
