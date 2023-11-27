@@ -1,0 +1,46 @@
+on: push
+
+name: Continuous Integration
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          registry-url: https://npm.pkg.github.com/
+      - uses: actions/cache@v2
+        id: yarn-unplugged-cache
+        with:
+          path: |
+            '.yarn/unplugged/'
+            '.yarn/build-state.yml'
+            '.yarn/install-state.gz'
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v1-
+
+      - name: Install unplugged dependencies and check immutable
+        run: |
+          yarn install --immutable
+        shell: bash
+
+      - name: Build
+        run: |
+          yarn build
+        shell: bash
+
+      - name: Typecheck
+        run: |
+          yarn typecheck
+        shell: bash
+
+      - name: Test
+        run: |
+          yarn test
+        shell: bash
+        env:
+          CI: true

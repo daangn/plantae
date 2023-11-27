@@ -21,9 +21,6 @@
     "*.ts": "eslint --fix --ignore-path .gitignore",
     "*.tsx": "eslint --fix --ignore-path .gitignore"
   },
-  "resolutions": {
-    "esbuild": "0.17"
-  },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "@types/node": "^18.15.0",
