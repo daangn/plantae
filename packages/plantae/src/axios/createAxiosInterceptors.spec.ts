@@ -12,10 +12,9 @@ describe("createAxiosInterceptors", () => {
       http.post(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status:
-              (await request.text()) === "modified" ? Status.OK : Status.BAD,
-          })
+          new Response(
+            (await request.text()) === "modified" ? Status.OK : Status.BAD
+          )
       )
     );
 
@@ -44,7 +43,7 @@ describe("createAxiosInterceptors", () => {
 
     const res = await axios.post("/");
 
-    expect(res.status).toBe(Status.OK);
+    expect(res.data).toBe(Status.OK);
   });
 
   it("can modify request headers", async () => {
@@ -52,12 +51,11 @@ describe("createAxiosInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status:
-              request.headers.get("x-custom-header") === "modified"
-                ? Status.OK
-                : Status.BAD,
-          })
+          new Response(
+            request.headers.get("x-custom-header") === "modified"
+              ? Status.OK
+              : Status.BAD
+          )
       )
     );
 
@@ -84,7 +82,7 @@ describe("createAxiosInterceptors", () => {
 
     const res = await axios.get("/");
 
-    expect(res.status).toBe(Status.OK);
+    expect(res.data).toBe(Status.OK);
   });
 
   it("can modify existing request header", async () => {
@@ -92,12 +90,11 @@ describe("createAxiosInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status:
-              request.headers.get("x-custom-header") === "modified"
-                ? Status.OK
-                : Status.BAD,
-          })
+          new Response(
+            request.headers.get("x-custom-header") === "modified"
+              ? Status.OK
+              : Status.BAD
+          )
       )
     );
 
@@ -128,11 +125,11 @@ describe("createAxiosInterceptors", () => {
       },
     });
 
-    expect(res.status).toBe(Status.OK);
+    expect(res.data).toBe(Status.OK);
   });
 
   it("can modify request method", async () => {
-    server.use(http.post(base("/"), () => new Response()));
+    server.use(http.post(base("/"), () => new Response(Status.OK)));
 
     const axios = Axios.create({
       baseURL,
@@ -158,11 +155,11 @@ describe("createAxiosInterceptors", () => {
 
     const res = await axios.get("/");
 
-    expect(res.status).toBe(Status.OK);
+    expect(res.data).toBe(Status.OK);
   });
 
   it("can modify request url", async () => {
-    server.use(http.get(base("/modified"), () => new Response()));
+    server.use(http.get(base("/modified"), () => new Response(Status.OK)));
 
     const axios = Axios.create({
       baseURL,
@@ -186,7 +183,7 @@ describe("createAxiosInterceptors", () => {
 
     const res = await axios.get("/");
 
-    expect(res.status).toBe(Status.OK);
+    expect(res.data).toBe(Status.OK);
   });
 
   it("can add request signal", async () => {
@@ -235,9 +232,7 @@ describe("createAxiosInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status: request.credentials === "omit" ? Status.OK : Status.BAD,
-          })
+          new Response(request.credentials === "omit" ? Status.OK : Status.BAD)
       )
     );
 
@@ -267,7 +262,7 @@ describe("createAxiosInterceptors", () => {
       withCredentials: true,
     });
 
-    expect(res.status).toBe(Status.OK);
+    expect(res.data).toBe(Status.OK);
   });
 
   it("can modify request cache", async () => {
@@ -275,12 +270,11 @@ describe("createAxiosInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status:
-              new URL(request.url).searchParams.get("_") !== null
-                ? Status.OK
-                : Status.BAD,
-          })
+          new Response(
+            new URL(request.url).searchParams.get("_") !== null
+              ? Status.OK
+              : Status.BAD
+          )
       )
     );
 
@@ -308,7 +302,7 @@ describe("createAxiosInterceptors", () => {
 
     const res = await axios.get("/");
 
-    expect(res.status).toBe(Status.OK);
+    expect(res.data).toBe(Status.OK);
   });
 
   it("can modify response body", async () => {

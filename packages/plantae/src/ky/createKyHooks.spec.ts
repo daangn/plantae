@@ -12,10 +12,7 @@ describe("createkyInterceptors", () => {
       http.post(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status:
-              (await request.text()) === "modified" ? Status.OK : Status.BAD,
-          })
+          new Response((await request.text()) === "modified" ? Status.OK : Status.BAD)
       )
     );
 
@@ -43,7 +40,7 @@ describe("createkyInterceptors", () => {
 
     const res = await ky.post("");
 
-    expect(res.status).toBe(Status.OK);
+    expect(await res.text()).toBe(Status.OK);
   });
 
   it("can modify request headers", async () => {
@@ -51,12 +48,9 @@ describe("createkyInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status:
-              request.headers.get("x-custom-header") === "modified"
-                ? Status.OK
-                : Status.BAD,
-          })
+          new Response(request.headers.get("x-custom-header") === "modified"
+          ? Status.OK
+          : Status.BAD)
       )
     );
 
@@ -82,7 +76,7 @@ describe("createkyInterceptors", () => {
 
     const res = await ky.get("");
 
-    expect(res.status).toBe(Status.OK);
+    expect(await res.text()).toBe(Status.OK);
   });
 
   it("can modify existing request header", async () => {
@@ -90,12 +84,9 @@ describe("createkyInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status:
-              request.headers.get("x-custom-header") === "modified"
-                ? Status.OK
-                : Status.BAD,
-          })
+          new Response(request.headers.get("x-custom-header") === "modified"
+          ? Status.OK
+          : Status.BAD)
       )
     );
 
@@ -125,11 +116,11 @@ describe("createkyInterceptors", () => {
       },
     });
 
-    expect(res.status).toBe(Status.OK);
+    expect(await res.text()).toBe(Status.OK);
   });
 
   it("can modify request method", async () => {
-    server.use(http.post(base("/"), () => new Response()));
+    server.use(http.post(base("/"), () => new Response(Status.OK)));
 
     const hooks = createKyHooks({
       client: Ky,
@@ -154,11 +145,11 @@ describe("createkyInterceptors", () => {
 
     const res = await ky.get("");
 
-    expect(res.status).toBe(Status.OK);
+    expect(await res.text()).toBe(Status.OK);
   });
 
   it("can modify request url", async () => {
-    server.use(http.get(base("/modified"), () => new Response()));
+    server.use(http.get(base("/modified"), () => new Response(Status.OK)));
 
     const hooks = createKyHooks({
       client: Ky,
@@ -181,7 +172,7 @@ describe("createkyInterceptors", () => {
 
     const res = await ky.get("");
 
-    expect(res.status).toBe(Status.OK);
+    expect(await res.text()).toBe(Status.OK);
   });
 
   it("can add request signal", async () => {
@@ -228,9 +219,7 @@ describe("createkyInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status: request.credentials === "omit" ? Status.OK : Status.BAD,
-          })
+          new Response(request.credentials === "omit" ? Status.OK : Status.BAD)
       )
     );
 
@@ -259,7 +248,7 @@ describe("createkyInterceptors", () => {
       credentials: "include",
     });
 
-    expect(res.status).toBe(Status.OK);
+    expect(await res.text()).toBe(Status.OK);
   });
 
   it("can modify request cache", async () => {
@@ -267,9 +256,7 @@ describe("createkyInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(null, {
-            status: request.cache === "no-cache" ? Status.OK : Status.BAD,
-          })
+          new Response(request.cache === "no-cache" ? Status.OK : Status.BAD)
       )
     );
 
@@ -298,7 +285,7 @@ describe("createkyInterceptors", () => {
       cache: "force-cache",
     });
 
-    expect(res.status).toBe(Status.OK);
+    expect(await res.text()).toBe(Status.OK);
   });
 
   it("can modify response body", async () => {
