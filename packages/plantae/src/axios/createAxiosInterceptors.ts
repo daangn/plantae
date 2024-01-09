@@ -69,6 +69,8 @@ async function extendClientRequest(
 ): Promise<InternalAxiosRequestConfig> {
   let data = clientRequest.data;
 
+  const isJSONBody = typeof data === "object" && data !== null;
+
   const { headers } = adapterRequest;
 
   const contentType = headers.get("Content-Type");
@@ -76,6 +78,8 @@ async function extendClientRequest(
   if (adapterRequest.body) {
     if (contentType?.includes("multipart/form-data")) {
       data = await adapterRequest.formData();
+    } else if (contentType?.includes("application/json") && isJSONBody) {
+      data = await adapterRequest.json();
     } else if (
       contentType?.includes("application/x-www-form-urlencoded") ||
       contentType?.includes("text/plain") ||
