@@ -508,4 +508,54 @@ describe("createAxiosInterceptors", () => {
 
     expect(res.data).toBe("retried");
   });
+
+  it("should respect json type of original request body", async () => {
+    server.use(
+      http.post(base("/"), () => {
+        return new Response();
+      })
+    );
+
+    const axios = Axios.create({
+      baseURL,
+    });
+
+    const { request } = createAxiosInterceptors({
+      client: axios,
+      plugins: [
+        {
+          name: "plugin-modify-body",
+          hooks: {
+            beforeRequest: async (req) => {
+              return new Request(req, {
+                body: JSON.stringify({ ...(await req.json()), modified: true }),
+              });
+            },
+          },
+        },
+      ],
+    });
+
+    let type: string | undefined;
+    let data: any;
+
+    axios.interceptors.request.use((config) => {
+      type = typeof config.data;
+      data = config.data;
+
+      return config;
+    });
+
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
+
+    await axios.post("/", {
+      foo: "bar",
+    });
+
+    expect(type).toBe("object");
+    expect(data).toEqual({
+      foo: "bar",
+      modified: true,
+    });
+  });
 });
