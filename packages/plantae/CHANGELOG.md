@@ -1,5 +1,11 @@
 # plantae
 
+## 0.3.1
+
+### Patch Changes
+
+- e42e2eb: feat(plantae): respect json type of original request body
+
 ## 0.3.0
 
 ### Minor Changes
