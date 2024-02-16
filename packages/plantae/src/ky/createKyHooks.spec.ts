@@ -505,4 +505,39 @@ describe("createKyHooks", () => {
 
     expect(await res.text()).toBe("retried");
   });
+
+  it("should pass unused request to afterResponse hook", async () => {
+    server.use(http.post(base("/"), () => new Response()));
+
+    const hooks = createKyHooks({
+      client: Ky,
+      plugins: [
+        {
+          name: "plugin-clone-request",
+          hooks: {
+            beforeRequest: (req) => {
+              return new Request(req, {
+                method: "POST",
+                body: "modified",
+              });
+            },
+            afterResponse: (_, req, retry) => {
+              expect(req.bodyUsed).toBe(false);
+
+              return retry(req);
+            },
+          },
+        },
+      ],
+    });
+
+    const ky = Ky.create({
+      prefixUrl: baseURL,
+      hooks,
+    });
+
+    await ky.get("");
+
+    expect.assertions(1);
+  });
 });
