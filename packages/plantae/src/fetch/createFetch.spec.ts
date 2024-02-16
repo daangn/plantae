@@ -11,7 +11,9 @@ describe("createAxiosInterceptors", () => {
       http.post(
         base("/"),
         async ({ request }) =>
-          new Response((await request.text()) === "modified" ? Status.OK : Status.BAD)
+          new Response(
+            (await request.text()) === "modified" ? Status.OK : Status.BAD
+          )
       )
     );
 
@@ -43,9 +45,11 @@ describe("createAxiosInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(request.headers.get("x-custom-header") === "modified"
-          ? Status.OK
-          : Status.BAD)
+          new Response(
+            request.headers.get("x-custom-header") === "modified"
+              ? Status.OK
+              : Status.BAD
+          )
       )
     );
 
@@ -73,9 +77,11 @@ describe("createAxiosInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(request.headers.get("x-custom-header") === "modified"
-          ? Status.OK
-          : Status.BAD)
+          new Response(
+            request.headers.get("x-custom-header") === "modified"
+              ? Status.OK
+              : Status.BAD
+          )
       )
     );
 
