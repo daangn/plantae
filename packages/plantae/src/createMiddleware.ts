@@ -44,6 +44,7 @@ export function createResponseMiddleware<T, U>({
   extendClientRequest,
   convertToAdapterResponse,
   extendClientResponse,
+  cloneClientRequest,
   retry,
 }: {
   plugins: Plugin[];
@@ -51,6 +52,7 @@ export function createResponseMiddleware<T, U>({
   extendClientRequest: ExtendClientRequest<T>;
   convertToAdapterResponse: ConvertToAdapterResponse<U>;
   extendClientResponse: ExtendClientResponse<U>;
+  cloneClientRequest?: (req: T) => T;
   retry: Retryer<T, U>;
 }) {
   return async (clientResponse: U, clientRequest: T) => {
@@ -64,12 +66,17 @@ export function createResponseMiddleware<T, U>({
           convertToAdapterRequest(clientRequest),
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           async (adapterRequest) => {
-            clientRequest = await extendClientRequest(
+            const extendedClientRequest = await extendClientRequest(
               clientRequest,
               adapterRequest
             );
+            const clonedClientRequest = cloneClientRequest
+              ? cloneClientRequest(extendedClientRequest)
+              : extendedClientRequest;
 
-            clientResponse = await retry(clientRequest);
+            clientResponse = await retry(extendedClientRequest);
+
+            clientRequest = clonedClientRequest;
 
             return convertToAdapterResponse(clientResponse);
           }
@@ -86,6 +93,7 @@ export default function createMiddleware<Req, Res>({
   extendClientRequest,
   convertToAdapterResponse,
   extendClientResponse,
+  cloneClientRequest,
   plugins,
   retry,
 }: {
@@ -94,6 +102,7 @@ export default function createMiddleware<Req, Res>({
   extendClientRequest: ExtendClientRequest<Req>;
   convertToAdapterResponse: ConvertToAdapterResponse<Res>;
   extendClientResponse: ExtendClientResponse<Res>;
+  cloneClientRequest?: (req: Req) => Req;
   retry: Retryer<Req, Res>;
 }) {
   return {
@@ -108,6 +117,7 @@ export default function createMiddleware<Req, Res>({
       extendClientRequest,
       convertToAdapterResponse,
       extendClientResponse,
+      cloneClientRequest,
       retry,
     }),
   };

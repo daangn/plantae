@@ -23,15 +23,17 @@ const createFetch = ({
       convertToAdapterResponse: (res) => res,
       extendClientRequest: (_, req) => req as Request,
       extendClientResponse: (_, res) => res as Response,
+      cloneClientRequest: (req) => req.clone(),
       plugins,
       retry: client,
     });
 
     const request = await requestMiddleware(initialRequest);
+    const clonedClientRequest = request.clone();
 
     const initialResponse = await client(request);
 
-    return responseMiddleware(initialResponse, request);
+    return responseMiddleware(initialResponse, clonedClientRequest);
   };
 };
 

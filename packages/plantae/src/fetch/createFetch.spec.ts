@@ -424,4 +424,33 @@ describe("createFetch", () => {
 
     expect(await res.text()).toBe("retried");
   });
+
+  it("should pass unused request to afterResponse hook", async () => {
+    server.use(http.post(base("/"), () => new Response()));
+
+    const fetch = createFetch({
+      plugins: [
+        {
+          name: "plugin-clone-request",
+          hooks: {
+            beforeRequest: (req) => {
+              return new Request(req, {
+                method: "POST",
+                body: "modified",
+              });
+            },
+            afterResponse: (_, req, retry) => {
+              expect(req.bodyUsed).toBe(false);
+
+              return retry(req);
+            },
+          },
+        },
+      ],
+    });
+
+    await fetch(base("/"));
+
+    expect.assertions(1);
+  });
 });
