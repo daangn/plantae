@@ -24,6 +24,7 @@ const createKyHooks = ({
     convertToAdapterResponse: (res) => res,
     extendClientRequest: (_, req) => req as Request,
     extendClientResponse: (_, res) => res as Response,
+    cloneClientRequest: (req) => req.clone(),
     plugins,
     retry: client,
   });
