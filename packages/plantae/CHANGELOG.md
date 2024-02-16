@@ -1,5 +1,11 @@
 # plantae
 
+## 0.3.2
+
+### Patch Changes
+
+- f6ff0d9: fix: clone request object on fetch based adapter
+
 ## 0.3.1
 
 ### Patch Changes
