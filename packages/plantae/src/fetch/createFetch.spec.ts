@@ -5,7 +5,7 @@ import { base, Status } from "../test/utils";
 import { server } from "../test/worker";
 import createFetch from "./createFetch";
 
-describe("createAxiosInterceptors", () => {
+describe("createFetch", () => {
   it("can modify request body", async () => {
     server.use(
       http.post(

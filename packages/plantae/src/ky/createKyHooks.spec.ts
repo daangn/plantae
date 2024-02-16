@@ -6,7 +6,7 @@ import { base, baseURL, Status } from "../test/utils";
 import { server } from "../test/worker";
 import createKyHooks from "./createKyHooks";
 
-describe("createkyInterceptors", () => {
+describe("createKyHooks", () => {
   it("can modify request body", async () => {
     server.use(
       http.post(
