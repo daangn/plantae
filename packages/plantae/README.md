@@ -75,7 +75,7 @@ const { request, response } = createAxiosInterceptors({
 });
 
 myAxios.interceptors.request.use(request.onFulfilled, request.onRejected);
-myAxios.interceptors.response.use(response.onFulfilled, request.onRejected);
+myAxios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
 export { myAxios };
 ```
