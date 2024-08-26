@@ -558,4 +558,30 @@ describe("createAxiosInterceptors", () => {
       modified: true,
     });
   });
+
+  it("should throw error if status code validation failed", async () => {
+    server.use(
+      http.get(base("/"), () => {
+        return new Response(null, {
+          status: 500,
+        });
+      })
+    );
+
+    const axios = Axios.create({
+      baseURL,
+    });
+
+    const { request, response } = createAxiosInterceptors({
+      client: axios,
+      plugins: [],
+    });
+
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
+
+    await expect(axios.get("/")).rejects.toThrow(
+      "Request failed with status code 500"
+    );
+  });
 });
