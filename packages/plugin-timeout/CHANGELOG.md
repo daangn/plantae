@@ -1,5 +1,11 @@
 # @plantae/plugin-timeout
 
+## 0.1.2
+
+### Patch Changes
+
+- 9041b51: fix(plugin-timeout): override request with new object
+
 ## 0.1.1
 
 ### Patch Changes
