@@ -11,10 +11,9 @@ export default function timeoutPlugin(timeout: number): Plugin {
           controller.abort();
         }, timeout);
 
-        return {
-          ...req,
+        return new Request(req, {
           signal: controller.signal,
-        };
+        });
       },
     },
   };
