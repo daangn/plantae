@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 export default function settle(
   resolve: Function,
   reject: Function,
-  response: AxiosResponse
+  response: AxiosResponse,
 ) {
   const validateStatus = response.config.validateStatus;
   if (!response.status || !validateStatus || validateStatus(response.status)) {
@@ -19,8 +19,8 @@ export default function settle(
         ],
         response.config,
         response.request,
-        response
-      )
+        response,
+      ),
     );
   }
 }

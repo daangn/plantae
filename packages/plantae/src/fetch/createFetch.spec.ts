@@ -12,9 +12,9 @@ describe("createFetch", () => {
         base("/"),
         async ({ request }) =>
           new Response(
-            (await request.text()) === "modified" ? Status.OK : Status.BAD
-          )
-      )
+            (await request.text()) === "modified" ? Status.OK : Status.BAD,
+          ),
+      ),
     );
 
     const fetch = createFetch({
@@ -48,9 +48,9 @@ describe("createFetch", () => {
           new Response(
             request.headers.get("x-custom-header") === "modified"
               ? Status.OK
-              : Status.BAD
-          )
-      )
+              : Status.BAD,
+          ),
+      ),
     );
 
     const fetch = createFetch({
@@ -80,9 +80,9 @@ describe("createFetch", () => {
           new Response(
             request.headers.get("x-custom-header") === "modified"
               ? Status.OK
-              : Status.BAD
-          )
-      )
+              : Status.BAD,
+          ),
+      ),
     );
 
     const fetch = createFetch({
@@ -158,7 +158,7 @@ describe("createFetch", () => {
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
         return new Response();
-      })
+      }),
     );
 
     const fetch = createFetch({
@@ -190,8 +190,8 @@ describe("createFetch", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(request.credentials === "omit" ? Status.OK : Status.BAD)
-      )
+          new Response(request.credentials === "omit" ? Status.OK : Status.BAD),
+      ),
     );
 
     const fetch = createFetch({
@@ -221,8 +221,8 @@ describe("createFetch", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(request.cache === "no-cache" ? Status.OK : Status.BAD)
-      )
+          new Response(request.cache === "no-cache" ? Status.OK : Status.BAD),
+      ),
     );
 
     const fetch = createFetch({
@@ -306,8 +306,8 @@ describe("createFetch", () => {
             headers: {
               "x-custom-header": "original",
             },
-          })
-      )
+          }),
+      ),
     );
 
     const fetch = createFetch({
@@ -343,8 +343,8 @@ describe("createFetch", () => {
         async () =>
           new Response(null, {
             status: 201,
-          })
-      )
+          }),
+      ),
     );
 
     const fetch = createFetch({
@@ -399,7 +399,7 @@ describe("createFetch", () => {
           status: 500,
         });
       }),
-      http.get(base("/retry"), () => new Response("retried"))
+      http.get(base("/retry"), () => new Response("retried")),
     );
 
     const fetch = createFetch({

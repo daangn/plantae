@@ -22,7 +22,7 @@ type Interceptor<T extends InterceptorType> = {
 };
 
 function convertToAdapterRequest(
-  req: InternalAxiosRequestConfig
+  req: InternalAxiosRequestConfig,
 ): AdapterRequest {
   const path = req.url
     ? req.url.startsWith("/")
@@ -42,7 +42,7 @@ function convertToAdapterRequest(
     ? Array.isArray(req.transformRequest)
       ? req.transformRequest.reduce(
           (data, transformer) => transformer.bind(req)(data, req.headers),
-          req.data
+          req.data,
         )
       : req.transformRequest(req.data, req.headers)
     : req.data;
@@ -51,8 +51,8 @@ function convertToAdapterRequest(
     req.withCredentials === true
       ? "include"
       : req.withCredentials === false
-      ? "omit"
-      : "same-origin";
+        ? "omit"
+        : "same-origin";
 
   return new Request(url, {
     body: transformedData,
@@ -65,7 +65,7 @@ function convertToAdapterRequest(
 
 async function extendClientRequest(
   clientRequest: InternalAxiosRequestConfig,
-  adapterRequest: AdapterRequest
+  adapterRequest: AdapterRequest,
 ): Promise<InternalAxiosRequestConfig> {
   let data = clientRequest.data;
 
@@ -138,19 +138,19 @@ function convertToAdapterResponse(res: AxiosResponse): AdapterResponse {
     isJSONBody
       ? JSON.stringify(res.data)
       : isNullBodyStatus(res.status)
-      ? null
-      : res.data,
+        ? null
+        : res.data,
     {
       status: res.status,
       statusText: res.statusText,
       headers: new Headers(headers.toJSON(true) as HeadersInit),
-    }
+    },
   );
 }
 
 async function extendClientResponse(
   clientResponse: AxiosResponse,
-  adapterResponse: AdapterResponse
+  adapterResponse: AdapterResponse,
 ): Promise<AxiosResponse> {
   const { headers } = adapterResponse;
 
@@ -172,6 +172,7 @@ async function extendClientResponse(
           data = JSON.parse(data);
           headers.set("Content-Type", "application/json");
         }
+        // biome-ignore lint/suspicious/noEmptyBlockStatements: intended
       } catch {}
     } else if (clientResponse.config.responseType === "arraybuffer") {
       data = await adapterResponse.arrayBuffer();
@@ -234,7 +235,7 @@ const createAxiosInterceptors = ({
         if (response && response.config) {
           const middlewareResponse = await responseMiddleware(
             response,
-            response.config
+            response.config,
           );
 
           return new Promise((resolve, reject) => {
