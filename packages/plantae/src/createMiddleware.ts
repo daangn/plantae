@@ -3,13 +3,13 @@ import type { AdapterRequest, AdapterResponse, Plugin } from "./types";
 type ConvertToAdapterRequest<T> = (request: T) => AdapterRequest;
 type ExtendClientRequest<T> = (
   clientRequest: T,
-  adapterRequest: AdapterRequest
+  adapterRequest: AdapterRequest,
 ) => T | Promise<T>;
 
 type ConvertToAdapterResponse<T> = (response: T) => AdapterResponse;
 type ExtendClientResponse<T> = (
   clientResponse: T,
-  adapterResponse: AdapterResponse
+  adapterResponse: AdapterResponse,
 ) => T | Promise<T>;
 
 type Retryer<T, U> = (clientRequest: T) => Promise<U>;
@@ -64,11 +64,10 @@ export function createResponseMiddleware<T, U>({
         adapterResponse = await plugin.hooks.afterResponse(
           adapterResponse,
           convertToAdapterRequest(clientRequest),
-          // eslint-disable-next-line @typescript-eslint/no-loop-func
           async (adapterRequest) => {
             const extendedClientRequest = await extendClientRequest(
               clientRequest,
-              adapterRequest
+              adapterRequest,
             );
             const clonedClientRequest = cloneClientRequest
               ? cloneClientRequest(extendedClientRequest)
@@ -79,7 +78,7 @@ export function createResponseMiddleware<T, U>({
             clientRequest = clonedClientRequest;
 
             return convertToAdapterResponse(clientResponse);
-          }
+          },
         );
       }
     }

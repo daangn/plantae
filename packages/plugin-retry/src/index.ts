@@ -59,7 +59,7 @@ export default function retryPlugin(options: PluginOptions): Plugin {
 
           const delay = Math.max(
             calculateBackoff(i + 1, backoffLimit),
-            retryAfterSeconds * 1000
+            retryAfterSeconds * 1000,
           );
 
           res =

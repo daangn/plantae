@@ -27,6 +27,11 @@ jobs:
           yarn install --immutable
         shell: bash
 
+      - name: Check Biome
+        run: |
+          yarn check
+        shell: bash
+
       - name: Build
         run: |
           yarn build
@@ -35,7 +40,7 @@ jobs:
       - name: Typecheck
         run: |
           yarn typecheck
-        shell: bash
+        shell: bash        
 
       - name: Test
         run: |

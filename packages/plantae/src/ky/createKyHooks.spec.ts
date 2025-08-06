@@ -13,9 +13,9 @@ describe("createKyHooks", () => {
         base("/"),
         async ({ request }) =>
           new Response(
-            (await request.text()) === "modified" ? Status.OK : Status.BAD
-          )
-      )
+            (await request.text()) === "modified" ? Status.OK : Status.BAD,
+          ),
+      ),
     );
 
     const hooks = createKyHooks({
@@ -53,9 +53,9 @@ describe("createKyHooks", () => {
           new Response(
             request.headers.get("x-custom-header") === "modified"
               ? Status.OK
-              : Status.BAD
-          )
-      )
+              : Status.BAD,
+          ),
+      ),
     );
 
     const hooks = createKyHooks({
@@ -91,9 +91,9 @@ describe("createKyHooks", () => {
           new Response(
             request.headers.get("x-custom-header") === "modified"
               ? Status.OK
-              : Status.BAD
-          )
-      )
+              : Status.BAD,
+          ),
+      ),
     );
 
     const hooks = createKyHooks({
@@ -187,7 +187,7 @@ describe("createKyHooks", () => {
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
         return new Response();
-      })
+      }),
     );
 
     const hooks = createKyHooks({
@@ -225,8 +225,8 @@ describe("createKyHooks", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(request.credentials === "omit" ? Status.OK : Status.BAD)
-      )
+          new Response(request.credentials === "omit" ? Status.OK : Status.BAD),
+      ),
     );
 
     const hooks = createKyHooks({
@@ -262,8 +262,8 @@ describe("createKyHooks", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(request.cache === "no-cache" ? Status.OK : Status.BAD)
-      )
+          new Response(request.cache === "no-cache" ? Status.OK : Status.BAD),
+      ),
     );
 
     const hooks = createKyHooks({
@@ -363,8 +363,8 @@ describe("createKyHooks", () => {
             headers: {
               "x-custom-header": "original",
             },
-          })
-      )
+          }),
+      ),
     );
 
     const hooks = createKyHooks({
@@ -406,8 +406,8 @@ describe("createKyHooks", () => {
         async () =>
           new Response(null, {
             status: 201,
-          })
-      )
+          }),
+      ),
     );
 
     const hooks = createKyHooks({
@@ -474,7 +474,7 @@ describe("createKyHooks", () => {
           status: 500,
         });
       }),
-      http.get(base("/retry"), () => new Response("retried"))
+      http.get(base("/retry"), () => new Response("retried")),
     );
 
     const hooks = createKyHooks({

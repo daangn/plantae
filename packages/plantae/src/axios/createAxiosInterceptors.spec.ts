@@ -13,9 +13,9 @@ describe("createAxiosInterceptors", () => {
         base("/"),
         async ({ request }) =>
           new Response(
-            (await request.text()) === "modified" ? Status.OK : Status.BAD
-          )
-      )
+            (await request.text()) === "modified" ? Status.OK : Status.BAD,
+          ),
+      ),
     );
 
     const axios = Axios.create({
@@ -54,9 +54,9 @@ describe("createAxiosInterceptors", () => {
           new Response(
             request.headers.get("x-custom-header") === "modified"
               ? Status.OK
-              : Status.BAD
-          )
-      )
+              : Status.BAD,
+          ),
+      ),
     );
 
     const axios = Axios.create({
@@ -93,9 +93,9 @@ describe("createAxiosInterceptors", () => {
           new Response(
             request.headers.get("x-custom-header") === "modified"
               ? Status.OK
-              : Status.BAD
-          )
-      )
+              : Status.BAD,
+          ),
+      ),
     );
 
     const axios = Axios.create({
@@ -192,7 +192,7 @@ describe("createAxiosInterceptors", () => {
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
         return new Response();
-      })
+      }),
     );
 
     const axios = Axios.create({
@@ -232,8 +232,8 @@ describe("createAxiosInterceptors", () => {
       http.get(
         base("/"),
         async ({ request }) =>
-          new Response(request.credentials === "omit" ? Status.OK : Status.BAD)
-      )
+          new Response(request.credentials === "omit" ? Status.OK : Status.BAD),
+      ),
     );
 
     const axios = Axios.create({
@@ -273,9 +273,9 @@ describe("createAxiosInterceptors", () => {
           new Response(
             new URL(request.url).searchParams.get("_") !== null
               ? Status.OK
-              : Status.BAD
-          )
-      )
+              : Status.BAD,
+          ),
+      ),
     );
 
     const axios = Axios.create({
@@ -369,8 +369,8 @@ describe("createAxiosInterceptors", () => {
             headers: {
               "x-custom-header": "original",
             },
-          })
-      )
+          }),
+      ),
     );
 
     const axios = Axios.create({
@@ -406,8 +406,8 @@ describe("createAxiosInterceptors", () => {
         async () =>
           new Response(null, {
             status: 201,
-          })
-      )
+          }),
+      ),
     );
 
     const axios = Axios.create({
@@ -476,7 +476,7 @@ describe("createAxiosInterceptors", () => {
           status: 500,
         });
       }),
-      http.get(base("/retry"), () => new Response("retried"))
+      http.get(base("/retry"), () => new Response("retried")),
     );
 
     const axios = Axios.create({
@@ -513,7 +513,7 @@ describe("createAxiosInterceptors", () => {
     server.use(
       http.post(base("/"), () => {
         return new Response();
-      })
+      }),
     );
 
     const axios = Axios.create({
@@ -565,7 +565,7 @@ describe("createAxiosInterceptors", () => {
         return new Response(null, {
           status: 500,
         });
-      })
+      }),
     );
 
     const axios = Axios.create({
@@ -581,7 +581,7 @@ describe("createAxiosInterceptors", () => {
     axios.interceptors.response.use(response.onFulfilled, response.onRejected);
 
     await expect(axios.get("/")).rejects.toThrow(
-      "Request failed with status code 500"
+      "Request failed with status code 500",
     );
   });
 });
