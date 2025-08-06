@@ -27,14 +27,19 @@ jobs:
           yarn install --immutable
         shell: bash
 
-      - name: Build
+      - name: Check Biome
         run: |
-          yarn build
+          yarn lint
         shell: bash
 
       - name: Typecheck
         run: |
           yarn typecheck
+        shell: bash
+
+      - name: Build
+        run: |
+          yarn build
         shell: bash
 
       - name: Test
