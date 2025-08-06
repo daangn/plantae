@@ -116,6 +116,8 @@ async function extendClientRequest(
   clientRequest.signal = adapterRequest.signal;
   clientRequest.withCredentials = adapterRequest.credentials === "include";
 
+  clientRequest.validateStatus = null;
+
   return clientRequest;
 }
 
