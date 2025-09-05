@@ -5,6 +5,8 @@ import type {
   InternalAxiosRequestConfig,
 } from "axios";
 
+import Axios from "axios";
+
 import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
 import { isArrayBuffer, isNullBodyStatus } from "../utils";
@@ -191,10 +193,10 @@ async function extendClientResponse(
 }
 
 const createAxiosInterceptors = ({
-  client,
+  client = Axios.create(),
   plugins,
 }: {
-  client: AxiosInstance;
+  client?: AxiosInstance;
   plugins?: Plugin[];
 }): {
   request: Interceptor<"request">;
