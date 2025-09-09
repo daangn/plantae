@@ -54,10 +54,17 @@ function convertToAdapterRequest(
         ? "omit"
         : "same-origin";
 
+  const headers = new Headers(req.headers.toJSON(true) as HeadersInit);
+
+  // Let `Request` constructor set `Content-Type` header
+  if (transformedData instanceof FormData) {
+    headers.delete("Content-Type");
+  }
+
   return new Request(url, {
     body: transformedData,
     method: req.method ?? "GET",
-    headers: new Headers(req.headers.toJSON(true) as HeadersInit),
+    headers,
     signal: req.signal as AbortSignal,
     credentials,
   });

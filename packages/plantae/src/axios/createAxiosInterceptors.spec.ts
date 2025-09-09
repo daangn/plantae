@@ -584,4 +584,50 @@ describe("createAxiosInterceptors", () => {
       "Request failed with status code 500",
     );
   });
+
+  it("should not throw error while form data request is retried", async () => {
+    let retried = false;
+
+    server.use(
+      http.post(base("/"), () => {
+        return new Response(retried ? Status.OK : Status.BAD, {
+          status: retried ? 200 : 500,
+        });
+      }),
+    );
+
+    const axios = Axios.create({
+      baseURL,
+    });
+
+    const { request, response } = createAxiosInterceptors({
+      client: axios,
+      plugins: [
+        {
+          name: "plugin-retry",
+          hooks: {
+            afterResponse: (res, req, retry) => {
+              if (res.status === 500) {
+                retried = true;
+
+                return retry(req);
+              }
+              return res;
+            },
+          },
+        },
+      ],
+    });
+
+    axios.interceptors.request.use(request.onFulfilled, request.onRejected);
+    axios.interceptors.response.use(response.onFulfilled, response.onRejected);
+
+    const formData = new FormData();
+
+    formData.append("foo", "bar");
+
+    const res = await axios.post("/", formData);
+
+    expect(res.data).toBe(Status.OK);
+  });
 });
