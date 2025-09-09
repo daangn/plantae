@@ -585,7 +585,7 @@ describe("createAxiosInterceptors", () => {
     );
   });
 
-  it.only("should not throw error if form data body is reused", async () => {
+  it("should not throw error while form data request is retried", async () => {
     let retried = false;
 
     server.use(
@@ -604,7 +604,7 @@ describe("createAxiosInterceptors", () => {
       client: axios,
       plugins: [
         {
-          name: "plugin-modify-body",
+          name: "plugin-retry",
           hooks: {
             afterResponse: (res, req, retry) => {
               if (res.status === 500) {
