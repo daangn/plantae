@@ -1,5 +1,11 @@
 # plantae
 
+## 0.3.4
+
+### Patch Changes
+
+- 579b4c3: Prevent Axios retries from re-entering Plantae hooks and let plugins inspect retry HTTP errors before applying the original status validator.
+
 ## 0.3.3
 
 ### Patch Changes
