@@ -42,7 +42,16 @@ jobs:
           yarn typecheck
         shell: bash        
 
+      - name: Use installed browser and driver
+        run: |
+          echo "CHROME_BIN=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          echo "CHROMEDRIVER_BIN=$(command -v chromedriver)" >> "$GITHUB_ENV"
+          google-chrome --version
+          chromedriver --version
+        shell: bash
+
       - name: Test
+        timeout-minutes: 3
         run: |
           yarn test
         shell: bash
