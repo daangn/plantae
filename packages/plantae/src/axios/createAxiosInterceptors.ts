@@ -208,10 +208,10 @@ async function extendClientResponse(
 }
 
 const createAxiosInterceptors = ({
-  client = Axios.create(),
+  client,
   plugins,
 }: {
-  client?: AxiosInstance;
+  client: AxiosInstance;
   plugins?: Plugin[];
 }): {
   request: Interceptor<"request">;

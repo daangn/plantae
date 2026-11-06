@@ -39,15 +39,16 @@ function setup(
     },
   );
   const client = Axios.create({ baseURL: "https://example.com", adapter });
+  const retryClient = sameClient ? client : Axios.create();
   const beforeRequest = vi.fn((req: Request) => req);
   const afterResponse = vi.fn(hook);
   const { request, response } = createAxiosInterceptors({
-    ...(sameClient ? { client } : {}),
+    client: retryClient,
     plugins: [{ name: "auth", hooks: { beforeRequest, afterResponse } }],
   });
   client.interceptors.request.use(request.onFulfilled, request.onRejected);
   client.interceptors.response.use(response.onFulfilled, response.onRejected);
-  return { client, adapter, beforeRequest, afterResponse };
+  return { client, retryClient, adapter, beforeRequest, afterResponse };
 }
 
 describe.each([false, true])(
@@ -91,6 +92,22 @@ describe.each([false, true])(
       await expect(client.get("/")).resolves.toMatchObject({ status: 200 });
       expect(adapter).toHaveBeenCalledTimes(2);
       expect(afterResponse).toHaveBeenCalledTimes(1);
+    });
+
+    it("runs other interceptors on the supplied retry client", async () => {
+      const { client, retryClient } = setup(
+        [401, 200],
+        sameClient,
+        (_, req, retry) => retry(req),
+      );
+      const onRequest = vi.fn((config) => config);
+      const onResponse = vi.fn((response) => response);
+      retryClient.interceptors.request.use(onRequest);
+      retryClient.interceptors.response.use(onResponse);
+
+      await expect(client.get("/")).resolves.toMatchObject({ status: 200 });
+      expect(onRequest).toHaveBeenCalledTimes(sameClient ? 2 : 1);
+      expect(onResponse).toHaveBeenCalledTimes(sameClient ? 2 : 1);
     });
 
     it("applies the original validator to the final retry response", async () => {

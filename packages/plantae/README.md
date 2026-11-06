@@ -80,9 +80,10 @@ myAxios.interceptors.response.use(response.onFulfilled, response.onRejected);
 export { myAxios };
 ```
 
-`client` is optional and defaults to a separate Axios instance. Pass a client
-when retries need its defaults or custom interceptors. The original request
-configuration (including its adapter) is forwarded to retries.
+`client` is required and executes retries. Pass the instance that receives the
+Plantae interceptors to keep its other interceptors active during retries. You can
+also explicitly supply a separate instance. The original request configuration
+(including its adapter) is forwarded to retries.
 
 The `retry` callback does not run Plantae hooks again. HTTP error responses are
 returned to the calling plugin so it can decide whether to retry again or throw
