@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "nanobundle": "^1.5.0",
-    "plantae": "^0.3.0",
+    "plantae": "^0.4.0",
     "rimraf": "^4.4.0",
     "typescript": "^5.1.3"
   },
