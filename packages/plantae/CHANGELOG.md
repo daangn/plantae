@@ -1,5 +1,11 @@
 # plantae
 
+## 0.4.0
+
+### Minor Changes
+
+- Release the Axios retry behavior changes introduced in 0.3.4 as a minor version. Compared with 0.3.3, internal retries skip Plantae hooks, HTTP error responses are returned to the calling plugin, and the final response is checked against the original validateStatus. Plugins must inspect retry responses and enforce their own retry limits. Network failures and cancellations still reject.
+
 ## 0.3.4
 
 ### Patch Changes

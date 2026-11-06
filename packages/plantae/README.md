@@ -91,6 +91,22 @@ an error. Plugins must bound their own retry loops. The final response is checke
 using the original request's `validateStatus`; network and cancellation errors
 still reject immediately. Other interceptors on a supplied client continue to run.
 
+### Migrating to 0.4.0
+
+The Axios retry behavior differs from 0.3.3 and earlier:
+
+- Plantae hooks run once for the outer request. Apply any changes needed for a
+  retry directly to the request passed to `retry()`.
+- `await retry(request)` returns HTTP error responses as well as successful
+  responses. Check `response.status` or `response.ok` instead of relying on
+  `catch` for HTTP errors, and bound any retry loop. Network failures and
+  cancellations still reject.
+- After plugins finish, the final response is checked against the original
+  `validateStatus`, including responses handled by the fulfilled interceptor.
+
+Version 0.4.0 contains the same runtime changes as 0.3.4, which was incorrectly
+released as a patch. Upgrade directly to 0.4.0 to adopt this behavior explicitly.
+
 ## Plugins
 
 ### Official Plugins

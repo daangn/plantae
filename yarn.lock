@@ -877,7 +877,7 @@ __metadata:
   resolution: "@plantae/plugin-retry@workspace:packages/plugin-retry"
   dependencies:
     nanobundle: ^1.5.0
-    plantae: ^0.3.0
+    plantae: ^0.4.0
     rimraf: ^4.4.0
     typescript: ^5.1.3
   languageName: unknown
@@ -888,7 +888,7 @@ __metadata:
   resolution: "@plantae/plugin-timeout@workspace:packages/plugin-timeout"
   dependencies:
     nanobundle: ^1.5.0
-    plantae: ^0.3.0
+    plantae: ^0.4.0
     rimraf: ^4.4.0
     typescript: ^5.1.3
   languageName: unknown
@@ -5384,7 +5384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"plantae@^0.3.0, plantae@workspace:packages/plantae":
+"plantae@^0.4.0, plantae@workspace:packages/plantae":
   version: 0.0.0-use.local
   resolution: "plantae@workspace:packages/plantae"
   dependencies:
