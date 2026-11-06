@@ -630,6 +630,7 @@ describe("createAxiosInterceptors", () => {
 
     expect(res.data).toBe(Status.OK);
   });
+
   it("should throw error if status code validation failed", async () => {
     server.use(
       http.get(base("/"), () => {
