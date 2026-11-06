@@ -5,10 +5,20 @@ import type {
   InternalAxiosRequestConfig,
 } from "axios";
 
+import Axios from "axios";
+
 import createMiddleware from "../createMiddleware";
 import type { AdapterRequest, AdapterResponse, Plugin } from "../types";
 import { isArrayBuffer, isNullBodyStatus } from "../utils";
 import settle from "./utils";
+
+// Axios preserves string config properties when merging a retried request.
+type PlantaeRequestConfig = InternalAxiosRequestConfig & {
+  __plantaeRetry?: boolean;
+};
+
+const isRetry = (config: PlantaeRequestConfig) =>
+  config.__plantaeRetry === true;
 
 type InterceptorType = keyof AxiosInstance["interceptors"];
 
@@ -220,32 +230,56 @@ const createAxiosInterceptors = ({
     extendClientRequest,
     extendClientResponse,
     plugins,
-    retry: client.request,
+    retry: async (config) => {
+      const retryConfig: PlantaeRequestConfig = {
+        ...config,
+        __plantaeRetry: true,
+        // Let the calling plugin inspect HTTP errors before final settlement.
+        validateStatus: null,
+      };
+      const restoreConfig = (retriedConfig: PlantaeRequestConfig) => {
+        retriedConfig.validateStatus = config.validateStatus;
+        delete retriedConfig.__plantaeRetry;
+      };
+      try {
+        const response = await client.request(retryConfig);
+        restoreConfig(response.config);
+        return response;
+      } catch (error) {
+        if (Axios.isAxiosError(error) && error.config) {
+          restoreConfig(error.config);
+        }
+        throw error;
+      }
+    },
   });
+
+  const processResponse = async (response: AxiosResponse) => {
+    const middlewareResponse = await responseMiddleware(
+      response,
+      response.config,
+    );
+    return new Promise<AxiosResponse>((resolve, reject) => {
+      settle(resolve, reject, middlewareResponse);
+    });
+  };
 
   return {
     request: {
       onFulfilled: async (config) => {
-        return requestMiddleware(config);
+        return isRetry(config) ? config : requestMiddleware(config);
       },
       onRejected: null,
     },
     response: {
       onFulfilled: async (response) => {
-        return responseMiddleware(response, response.config);
+        return isRetry(response.config) ? response : processResponse(response);
       },
       onRejected: async (err: { response?: AxiosResponse }) => {
         const { response } = err;
 
-        if (response && response.config) {
-          const middlewareResponse = await responseMiddleware(
-            response,
-            response.config,
-          );
-
-          return new Promise((resolve, reject) => {
-            settle(resolve, reject, middlewareResponse);
-          });
+        if (response && response.config && !isRetry(response.config)) {
+          return processResponse(response);
         }
 
         return Promise.reject(err);
